@@ -1,7 +1,10 @@
-.env
-node_modules
-dist
+version1/node_modules
+version1/.env
+version1/dist
+version1/.DS_Store
+version2/node_modules
+version2/.env
+version2/dist
+version2/.DS_Store
 .DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
+node_modules

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: maainhome-backend
+    env: node
+    plan: starter
+    rootDir: version2
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
