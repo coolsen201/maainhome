@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import https from "https";
-import { fileURLToPath } from "url";
+
 import express, { type Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
@@ -9,11 +9,8 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { WS_EVENTS, type WsMessage } from "@shared/ws-types";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Ensure cache directory
-const cacheDir = path.join(__dirname, "public/screensavers");
+const cacheDir = path.join(process.cwd(), "public/screensavers");
 if (!fs.existsSync(cacheDir)) {
   fs.mkdirSync(cacheDir, { recursive: true });
 }
