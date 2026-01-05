@@ -1,6 +1,3 @@
-const tailwindcmdk = require("tailwindcss-animate");
-const typography = require("@tailwindcss/typography");
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     darkMode: ["class"],
@@ -8,12 +5,11 @@ module.exports = {
     theme: {
         extend: {
             borderRadius: {
-                lg: ".5625rem", /* 9px */
-                md: ".375rem", /* 6px */
-                sm: ".1875rem", /* 3px */
+                lg: ".5625rem",
+                md: ".375rem",
+                sm: ".1875rem",
             },
             colors: {
-                // Flat / base colors (regular buttons)
                 background: "hsl(var(--background) / <alpha-value>)",
                 foreground: "hsl(var(--foreground) / <alpha-value>)",
                 border: "hsl(var(--border) / <alpha-value>)",
@@ -105,5 +101,5 @@ module.exports = {
             },
         },
     },
-    plugins: [tailwindcmdk, typography],
-};
+    plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+}
