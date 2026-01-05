@@ -229,7 +229,7 @@ export default function Landing() {
       </motion.div>
 
       <div className="mt-16 text-center text-xs text-muted-foreground/40 font-mono z-10">
-        SYSTEM V1.0.4 • SECURE CONNECTION • END-TO-END ENCRYPTED
+        SYSTEM V2.0.0 • SECURE CONNECTION • END-TO-END ENCRYPTED
       </div>
 
       {/* Password Reset Modal */}

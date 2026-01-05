@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Register from "@/pages/Register";
+import AuthCallback from "@/pages/AuthCallback";
 import Dashboard from "@/pages/Dashboard";
 import HomeStation from "@/pages/HomeStation";
 import RemoteViewer from "@/pages/RemoteViewer";
@@ -15,6 +16,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Landing} />
       <Route path="/register" component={Register} />
+      <Route path="/auth/callback" component={AuthCallback} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/home" component={HomeStation} />
       <Route path="/remote" component={RemoteViewer} />
