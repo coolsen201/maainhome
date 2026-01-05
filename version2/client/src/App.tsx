@@ -10,18 +10,40 @@ import AuthCallback from "@/pages/AuthCallback";
 import Dashboard from "@/pages/Dashboard";
 import HomeStation from "@/pages/HomeStation";
 import RemoteViewer from "@/pages/RemoteViewer";
+import { useEffect } from "react";
+import { isAndroid, isElectron } from "@/lib/platform";
+import { useLocation } from "wouter";
+
+function SmartRedirect() {
+  const [location, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (location === "/") {
+      if (isAndroid) {
+        setLocation("/remote");
+      } else if (isElectron) {
+        setLocation("/home");
+      }
+    }
+  }, [location, setLocation]);
+
+  return null;
+}
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Landing} />
-      <Route path="/register" component={Register} />
-      <Route path="/auth/callback" component={AuthCallback} />
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/home" component={HomeStation} />
-      <Route path="/remote" component={RemoteViewer} />
-      <Route component={NotFound} />
-    </Switch>
+    <>
+      <SmartRedirect />
+      <Switch>
+        <Route path="/" component={Landing} />
+        <Route path="/register" component={Register} />
+        <Route path="/auth/callback" component={AuthCallback} />
+        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/home" component={HomeStation} />
+        <Route path="/remote" component={RemoteViewer} />
+        <Route component={NotFound} />
+      </Switch>
+    </>
   );
 }
 
