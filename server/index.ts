@@ -1,10 +1,19 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
-import { createServer } from "http";
+import { createServer } from "https";
+import fs from "fs";
+import path from "path";
 
 const app = express();
-const httpServer = createServer(app);
+
+
+const certOptions = {
+  key: fs.readFileSync(path.resolve("server/key.pem")),
+  cert: fs.readFileSync(path.resolve("server/cert.pem"))
+};
+
+const httpServer = createServer(certOptions, app);
 
 declare module "http" {
   interface IncomingMessage {

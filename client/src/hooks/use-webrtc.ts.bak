@@ -28,9 +28,6 @@ export function useWebRTC(role: "home" | "remote") {
 
   const wsRef = useRef<WebSocket | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
-  // Ref to access current stream in callbacks without triggering re-renders or stale closures
-  const localStreamRef = useRef<MediaStream | null>(null);
-  const disconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   const addLog = useCallback((msg: string) => {
@@ -68,9 +65,6 @@ export function useWebRTC(role: "home" | "remote") {
 
     return () => {
       ws.close();
-      if (disconnectTimeoutRef.current) {
-        clearTimeout(disconnectTimeoutRef.current);
-      }
       if (state.localStream) {
         state.localStream.getTracks().forEach(track => track.stop());
       }
@@ -98,22 +92,9 @@ export function useWebRTC(role: "home" | "remote") {
     pc.onconnectionstatechange = () => {
       addLog(`Peer Connection State: ${pc.connectionState}`);
       if (pc.connectionState === 'connected') {
-        if (disconnectTimeoutRef.current) {
-          addLog("New connection detected, canceling screensaver delay");
-          clearTimeout(disconnectTimeoutRef.current);
-          disconnectTimeoutRef.current = null;
-        }
         setState(prev => ({ ...prev, status: 'connected' }));
       } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
         setState(prev => ({ ...prev, status: 'disconnected' }));
-
-        addLog("Disconnected. Screensaver will activate in 30 seconds...");
-        disconnectTimeoutRef.current = setTimeout(() => {
-          setState(prev => ({ ...prev, remoteStream: null }));
-          addLog("Screensaver activated (30s timeout reached)");
-          disconnectTimeoutRef.current = null;
-        }, 30000);
-
         // Clean up on disconnect to allow reconnection
         cleanupPeerConnection();
       }
@@ -124,19 +105,16 @@ export function useWebRTC(role: "home" | "remote") {
       setState(prev => ({ ...prev, remoteStream: event.streams[0] }));
     };
 
-    // Add local tracks if available (using Ref to avoid stale closure)
-    if (localStreamRef.current) {
-      localStreamRef.current.getTracks().forEach(track => {
-        pc.addTrack(track, localStreamRef.current!);
+    // Add local tracks if available
+    if (state.localStream) {
+      state.localStream.getTracks().forEach(track => {
+        pc.addTrack(track, state.localStream!);
       });
-      addLog(`Added ${localStreamRef.current.getTracks().length} local tracks to PC`);
-    } else {
-      addLog("No local stream to add to PC (Ref is null)");
     }
 
     pcRef.current = pc;
     return pc;
-  }, []);
+  }, [state.localStream]);
 
   const cleanupPeerConnection = () => {
     if (pcRef.current) {
@@ -216,7 +194,6 @@ export function useWebRTC(role: "home" | "remote") {
         audio: true
       });
       setState(prev => ({ ...prev, localStream: stream }));
-      localStreamRef.current = stream; // Update Ref
       addLog("Local Media Stream Active");
       return stream;
     } catch (err) {
@@ -231,8 +208,20 @@ export function useWebRTC(role: "home" | "remote") {
   };
 
   const callHome = async () => {
+    if (!state.isHomeOnline) {
+      toast({
+        title: "Offline",
+        description: "Home station is offline. Cannot initiate call.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     addLog("Initiating Call...");
     setState(prev => ({ ...prev, status: 'connecting' }));
+
+    // Ensure we have a local stream first (optional, remote viewer might be audio only or just receive)
+    // For this app, let's assume remote user sends video/audio too usually, but we'll proceed even if setupPeerConnection handles null stream
 
     const pc = setupPeerConnection();
     if (!pc) return;

@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
-import { WS_EVENTS, type WsMessage } from "@shared/schema";
+import { WS_EVENTS, type WsMessage } from "@shared/ws-types";
 
 export async function registerRoutes(
   httpServer: Server,

@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
+import Register from "@/pages/Register";
+import Dashboard from "@/pages/Dashboard";
 import HomeStation from "@/pages/HomeStation";
 import RemoteViewer from "@/pages/RemoteViewer";
 
@@ -12,6 +14,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Landing} />
+      <Route path="/register" component={Register} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/home" component={HomeStation} />
       <Route path="/remote" component={RemoteViewer} />
       <Route component={NotFound} />
