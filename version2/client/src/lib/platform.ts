@@ -12,9 +12,11 @@ export function detectPlatform(): Platform {
         return Platform.Android;
     }
 
-    // Check User Agent for Electron
-    if (typeof window !== 'undefined' && window.navigator.userAgent.toLowerCase().includes('electron')) {
-        return Platform.Electron;
+    // Check User Agent as fallback for mobile browsers or Electron
+    if (typeof window !== 'undefined') {
+        const ua = window.navigator.userAgent.toLowerCase();
+        if (ua.includes('android')) return Platform.Android;
+        if (ua.includes('electron')) return Platform.Electron;
     }
 
     // Fallback to Web
