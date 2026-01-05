@@ -1,0 +1,271 @@
+Understood. Below is a clean, neutral, technically precise README-style problem statement that you can directly paste into DeepSeek (or any other LLM / developer forum).
+It explains what is built, what works, what fails, and what needs to be fixed, without ChatGPT-specific language.
+
+You can copy-paste this as-is.
+
+GoLocal Intercom – WebRTC Video Issue (Detailed Problem Statement)
+Project Overview
+
+This project is a self-hosted two-way video & audio intercom system intended for home use.
+
+Use case:
+
+Home system runs on a Linux mini PC (Ubuntu 24.04 LTS) connected to:
+
+USB webcam
+
+Microphone
+
+TV as display
+
+Remote user connects using browser (laptop/mobile) over the public internet
+
+No paid services
+
+No cloud media servers
+
+No DNS or TURN servers at this stage
+
+Only direct WebRTC via signaling server
+
+Goal:
+
+Remote user can instantly see and talk to the home user
+
+No call accept button on home side
+
+Always-on intercom style system
+
+Architecture
+Browser (remote.html)
+        |
+        |  WebSocket signaling
+        v
+FastAPI + aiortc backend (uvicorn)
+        |
+        |  OpenCV camera capture
+        v
+Local USB Camera (/dev/video0)
+
+Technology Stack
+Backend
+
+Python 3.12
+
+FastAPI
+
+Uvicorn
+
+aiortc
+
+OpenCV (cv2)
+
+av
+
+Frontend
+
+Plain HTML + JavaScript
+
+WebRTC APIs
+
+WebSocket signaling
+
+OS
+
+Ubuntu 24.04.3 LTS (CLI-based system)
+
+What Is Working (Confirmed)
+
+Camera access
+
+/dev/video0 opens correctly
+
+Verified with:
+
+lsof /dev/video*
+
+
+When WebRTC session starts, uvicorn owns /dev/video0
+
+WebSocket signaling
+
+Browser connects successfully
+
+Backend logs:
+
+WebSocket /signal accepted
+
+
+SDP exchange
+
+Offer → Answer exchange completes
+
+Browser console shows:
+
+WebSocket connected
+Track received
+ICE state: checking
+
+
+Media track creation
+
+CameraVideoTrack(MediaStreamTrack) is instantiated
+
+Frames are captured from OpenCV
+
+No camera permission errors
+
+The Core Problem (Current Issue)
+Symptoms
+
+Browser console:
+
+WebSocket connected
+Track received
+ICE state: checking
+WebSocket closed
+
+
+ICE never reaches connected
+
+Video element remains black
+
+Backend logs:
+
+connection open
+connection closed
+
+Important Notes
+
+The camera is open
+
+Frames can be captured
+
+The problem is not hardware
+
+The problem is not OS permissions
+
+The problem is not OpenCV
+
+Key Observations
+
+WebSocket closes too early
+
+Signaling channel does not stay alive
+
+ICE candidate exchange is cut off
+
+ICE candidates are exchanged partially
+
+ICE state reaches checking
+
+Never stabilizes to connected
+
+Browser receives a track
+
+pc.ontrack fires
+
+But no video is rendered
+
+Current Backend Logic (High Level)
+
+FastAPI WebSocket /signal
+
+On connection:
+
+Create RTCPeerConnection
+
+Add CameraVideoTrack
+
+Handle:
+
+SDP offer
+
+SDP answer
+
+ICE candidates
+
+WebSocket is closed when:
+
+Exception occurs
+
+Or loop exits
+
+Suspected Root Causes
+
+One or more of the following:
+
+WebSocket lifecycle
+
+Socket closes when frontend JS execution ends
+
+No keep-alive / heartbeat mechanism
+
+ICE signaling timing
+
+Backend closes before ICE completes
+
+Candidate exchange incomplete
+
+Frontend signaling flow
+
+WebSocket object may be garbage-collected
+
+No persistent signaling state
+
+Media flow
+
+Track is negotiated but frames are not pushed/rendered
+
+What Is Needed (Request for Help)
+Desired Outcome
+
+Stable WebRTC video stream from backend camera to browser
+
+ICE reaches connected
+
+WebSocket remains open during session
+
+Video renders correctly in <video> element
+
+Specifically Need Help With
+
+Correct WebSocket lifetime management
+
+Proper ICE candidate handling in aiortc
+
+Best practice for signaling loop structure
+
+Ensuring MediaStreamTrack.recv() is continuously pulled
+
+Frontend WebRTC code review for rendering issues
+
+Non-Issues (Already Ruled Out)
+
+PipeWire conflicts ❌
+
+Camera permissions ❌
+
+/dev/video access ❌
+
+Abstract class implementation ❌
+
+aiortc installation ❌
+
+OpenCV capture ❌
+
+Additional Context
+
+This is intended to become a headless, auto-start intercom appliance
+
+Later phases include:
+
+Two-way audio
+
+Auto-start on boot
+
+TV fullscreen kiosk mode
+
+Summary (One Line)
+
+WebRTC signaling and media track negotiation succeed, camera is open, but the WebSocket closes before ICE completes, preventing stable video rendering in the browser.

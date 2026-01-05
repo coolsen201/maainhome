@@ -1,0 +1,15 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "https://maainhome.onrender.com/api/$1"
+        },
+        {
+            "source": "/((?!api/.*).*)",
+            "destination": "/index.html"
+        }
+    ],
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist/public",
+    "framework": "vite"
+}
