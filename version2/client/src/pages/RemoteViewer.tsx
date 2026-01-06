@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useWebRTC } from "@/hooks/use-webrtc";
+import { isAndroid } from "@/lib/platform";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { Button } from "@/components/ui/button";
 import { Phone, PhoneOff, Mic, MicOff, Camera, CameraOff, Loader2, ShieldCheck, FileKey, Smartphone, ArrowLeft } from "lucide-react";
@@ -142,8 +143,8 @@ export default function RemoteViewer() {
 
   return (
     <div className="fixed inset-0 bg-[#3d2b1f] overflow-hidden select-none">
-      {/* Back Button for Feed */}
-      {!isConnected && !isConnecting && (
+      {/* Back Button for Feed (Hidden on Android for standalone feel) */}
+      {!isConnected && !isConnecting && !isAndroid && (
         <Link href="/dashboard" className="absolute top-8 left-8 z-[100] inline-flex items-center text-xs font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors group">
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
           Back
