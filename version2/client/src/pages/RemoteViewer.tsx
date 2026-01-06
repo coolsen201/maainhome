@@ -141,7 +141,7 @@ export default function RemoteViewer() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black overflow-hidden select-none">
+    <div className="fixed inset-0 bg-[#3d2b1f] overflow-hidden select-none">
       {/* Back Button for Feed */}
       {!isConnected && !isConnecting && (
         <Link href="/dashboard" className="absolute top-8 left-8 z-[100] inline-flex items-center text-xs font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors group">
@@ -160,57 +160,64 @@ export default function RemoteViewer() {
           offlineImage={authProfile?.selfie_photo || "/Indian_grandmother.png"}
           offlineText={`${authProfile?.full_name || 'Mom'} is Waiting In Home`}
           showLabel={false}
-          showStatus={true}
+          showStatus={false}
         />
 
-        {/* Picture-in-Picture: Local Stream (Self view) - Bottom Right */}
-        {localStream && (isConnected || isConnecting) && (
-          <div className="absolute bottom-6 right-6 w-48 md:w-64 aspect-video shadow-2xl z-40 transition-transform hover:scale-105 rounded-xl overflow-hidden border-2 border-white/20">
-            <VideoDisplay
-              stream={localStream}
-              isLocal={true}
-              muted={true}
-              className="w-full h-full"
-              label="You"
-            />
-          </div>
-        )}
 
         {/* Overlay Controls (Bottom Center) */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 z-50">
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-end gap-6 z-50">
+          {/* Left: Mute Button */}
           <Button
             size="icon"
             variant={isMuted ? "destructive" : "secondary"}
-            className="rounded-full w-14 h-14 shadow-2xl backdrop-blur-md hover:scale-110 transition-transform"
+            className="rounded-full w-14 h-14 shadow-2xl backdrop-blur-md hover:scale-110 transition-transform mb-2"
             onClick={toggleMute}
           >
             {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
           </Button>
 
-          {!isConnected ? (
-            <Button
-              size="lg"
-              className="rounded-full px-10 h-14 shadow-2xl font-bold tracking-wide transition-all duration-300 bg-green-500 hover:bg-green-600 hover:shadow-green-500/20 text-white text-lg"
-              onClick={callHome}
-            >
-              <Phone className={cn("w-6 h-6 mr-3", isConnecting && "animate-pulse")} />
-              {isConnecting ? "Calling..." : "Call Home"}
-            </Button>
+          {/* Middle: Disconnect Button + Selfie Preview */}
+          {isConnecting || isConnected ? (
+            <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <Button
+                size="icon"
+                variant="outline"
+                className="rounded-full w-14 h-14 border-red-500/50 text-red-500 bg-red-500/10 hover:bg-red-500/20 backdrop-blur-md transition-all border-2"
+                onClick={() => window.location.reload()}
+              >
+                <PhoneOff className="w-6 h-6" />
+              </Button>
+
+              {localStream && (
+                <div className="w-32 md:w-40 aspect-video rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl">
+                  <VideoDisplay
+                    stream={localStream}
+                    isLocal={true}
+                    muted={true}
+                    showLabel={false}
+                    className="w-full h-full border-0"
+                  />
+                </div>
+              )}
+            </div>
           ) : (
-            <Button
-              size="icon"
-              variant="destructive"
-              className="rounded-full w-16 h-16 shadow-2xl hover:scale-110 transition-transform"
-              onClick={() => window.location.reload()} // Quick hangup implementation
-            >
-              <PhoneOff className="w-7 h-7" />
-            </Button>
+            <div className="mb-2">
+              <Button
+                size="lg"
+                className="rounded-full px-10 h-14 shadow-2xl font-bold tracking-wide transition-all duration-300 bg-green-500 hover:bg-green-600 hover:shadow-green-500/20 text-white text-lg"
+                onClick={callHome}
+              >
+                <Phone className="w-6 h-6 mr-3" />
+                Call Home
+              </Button>
+            </div>
           )}
 
+          {/* Right: Video Toggle Button */}
           <Button
             size="icon"
             variant={!isVideoEnabled ? "destructive" : "secondary"}
-            className="rounded-full w-14 h-14 shadow-2xl backdrop-blur-md hover:scale-110 transition-transform"
+            className="rounded-full w-14 h-14 shadow-2xl backdrop-blur-md hover:scale-110 transition-transform mb-2"
             onClick={toggleVideo}
           >
             {!isVideoEnabled ? <CameraOff className="w-6 h-6" /> : <Camera className="w-6 h-6" />}

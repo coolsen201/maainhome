@@ -60,7 +60,7 @@ app.on('activate', () => {
 
 // Auto-Launch Configuration
 const appLauncher = new AutoLaunch({
-  name: 'GoLocal Intercom',
+  name: 'MaainHome',
   path: process.execPath,
 });
 

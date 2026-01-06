@@ -1,5 +1,5 @@
 #!/bin/bash
-# GoLocal Intercom Version 2 Startup
+# MaainHome Version 2 Startup
 
 cd "$(dirname "$0")"
 

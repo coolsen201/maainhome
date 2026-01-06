@@ -80,17 +80,6 @@ export function VideoDisplay({
         </div>
       )}
 
-      {/* Standardized Signal Indicator */}
-      {showStatus && (
-        <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-start items-center transition-opacity duration-300">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
-            <div className={cn("w-2.5 h-2.5 rounded-full animate-pulse shadow-[0_0_10px_rgba(0,0,0,0.5)]", stream ? "bg-green-500 shadow-green-500/50" : "bg-red-500 shadow-red-500/50")} />
-            <span className="text-[11px] font-bold font-mono text-white/90 tracking-tighter">
-              {stream ? "Live Feed" : "No Signal"}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
