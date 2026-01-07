@@ -11,34 +11,36 @@ export function QrScanner({ onScanSuccess, onScanFailure }: QrScannerProps) {
 
     useEffect(() => {
         // Initialize the scanner
-        scannerRef.current = new Html5QrcodeScanner(
+        const scanner = new Html5QrcodeScanner(
             "reader",
             {
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
+                fps: 20,
+                qrbox: (viewfinderWidth, viewfinderHeight) => {
+                    const minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+                    const qrboxSize = Math.floor(minEdgeSize * 0.7);
+                    return { width: qrboxSize, height: qrboxSize };
+                },
                 rememberLastUsedCamera: true,
-                aspectRatio: 1.0
+                aspectRatio: 1.0,
+                showTorchButtonIfSupported: true,
             },
       /* verbose= */ false
         );
 
-        scannerRef.current.render(
+        scannerRef.current = scanner;
+
+        scanner.render(
             (decodedText) => {
-                // Success callback
                 onScanSuccess(decodedText);
-                // Clear scanner after successful scan
-                if (scannerRef.current) {
-                    scannerRef.current.clear().catch(console.error);
-                }
+                scanner.clear().catch(console.error);
             },
             (errorMessage) => {
-                // Error callback (optional)
+                // Occasional failures are normal as it scans frame by frame
                 if (onScanFailure) onScanFailure(errorMessage);
             }
         );
 
         return () => {
-            // Cleanup scanner on unmount
             if (scannerRef.current) {
                 scannerRef.current.clear().catch(console.error);
             }

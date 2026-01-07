@@ -29,6 +29,8 @@ export default function HomeStation() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isStarted, setIsStarted] = useState(false);
   const [localScreensavers, setLocalScreensavers] = useState<string[]>([]);
+  const [showManualInput, setShowManualInput] = useState(false);
+  const [manualKey, setManualKey] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -140,9 +142,45 @@ export default function HomeStation() {
           Point this station's camera at the QR code on your dashboard.
         </p>
 
-        <QrScanner onScanSuccess={handlePairing} />
+        {showManualInput ? (
+          <div className="w-full max-w-md space-y-4 animate-in fade-in slide-in-from-bottom-4">
+            <div className="bg-black/20 backdrop-blur-md p-6 rounded-3xl border border-white/10 space-y-4">
+              <label className="block text-[10px] font-mono text-white/40 uppercase tracking-[0.2em] px-2">Enter Secure Key Manually</label>
+              <textarea
+                value={manualKey}
+                onChange={(e) => setManualKey(e.target.value)}
+                placeholder="Paste the 256-bit secure key here..."
+                className="w-full h-32 bg-black/40 border-white/10 rounded-2xl p-4 text-xs font-mono text-green-500 placeholder:text-white/10 focus:ring-1 focus:ring-red-500/50 outline-none resize-none"
+              />
+              <Button
+                onClick={() => handlePairing(manualKey)}
+                disabled={!manualKey.trim() || isValidating}
+                className="w-full h-14 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl"
+              >
+                {isValidating ? <Loader2 className="w-5 h-5 animate-spin" /> : "PAIR WITH KEY"}
+              </Button>
+            </div>
+            <button
+              onClick={() => setShowManualInput(false)}
+              className="w-full text-center text-xs text-white/30 hover:text-white transition-colors"
+            >
+              Back to QR Scanner
+            </button>
+          </div>
+        ) : (
+          <>
+            <QrScanner onScanSuccess={handlePairing} />
+            <button
+              onClick={() => setShowManualInput(true)}
+              className="mt-8 text-xs font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors flex items-center gap-2 group"
+            >
+              <Settings className="w-3 h-3 group-hover:rotate-90 transition-transform" />
+              Use Manual Key Entry
+            </button>
+          </>
+        )}
 
-        {isValidating && (
+        {isValidating && !showManualInput && (
           <div className="mt-8 flex items-center gap-3 text-red-500 font-bold animate-pulse">
             <Loader2 className="w-5 h-5 animate-spin" />
             VALIDATING STATION...

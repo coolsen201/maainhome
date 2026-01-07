@@ -443,9 +443,9 @@ export default function Dashboard() {
                     <div className="flex flex-col items-center justify-center space-y-8 py-8">
                         <div className="p-4 bg-white rounded-3xl shadow-[0_0_50px_rgba(220,38,38,0.15)] border border-gray-100">
                             <img
-                                src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(`MOM_IN_HOME_AUTH:${profile?.secure_key}`)}`}
+                                src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(`MOM_IN_HOME_AUTH:${profile?.secure_key}`)}`}
                                 alt="Pairing QR Code"
-                                className="w-48 h-48"
+                                className="w-64 h-64"
                             />
                         </div>
 

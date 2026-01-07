@@ -42,7 +42,7 @@ export function useWebRTC(role: "home" | "remote") {
   useEffect(() => {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     // Use env var for split hosting (Vercel -> Render), fallback to relative for monolithic
-    const wsUrl = import.meta.env.VITE_WS_URL || `${protocol}//${window.location.host}/ws`;
+    const wsUrl = import.meta.env.VITE_WS_URL || `wss://api.maahome.in/ws`;
 
     addLog(`Connecting to WebSocket at ${wsUrl}...`);
     const ws = new WebSocket(wsUrl);
