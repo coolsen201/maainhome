@@ -165,66 +165,66 @@ export default function RemoteViewer() {
         />
 
 
-        {/* Overlay Controls (Bottom Center) */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-end gap-6 z-50">
-          {/* Left: Mute Button */}
+        {/* Selfie Preview (Picture-in-Picture) - Moved to Top Right Corner */}
+        {localStream && (isConnected || isConnecting) && (
+          <div className="absolute top-4 right-4 w-32 md:w-48 aspect-video rounded-xl overflow-hidden border-2 border-white/20 shadow-2xl z-40 animate-in fade-in zoom-in duration-500">
+            <VideoDisplay
+              stream={localStream}
+              isLocal={true}
+              muted={true}
+              showLabel={false}
+              className="w-full h-full border-0"
+            />
+          </div>
+        )}
+
+        {/* Overlay Controls (Bottom Center) - Refined with Transparency and Glassmorphism */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 z-50 w-full max-w-lg justify-center px-4">
+          {/* Mute Button - Semi-Transparent */}
           <Button
             size="icon"
-            variant={isMuted ? "destructive" : "secondary"}
-            className="rounded-full w-14 h-14 shadow-2xl backdrop-blur-md hover:scale-110 transition-transform mb-2"
+            className={cn(
+              "rounded-full w-14 h-14 shadow-2xl backdrop-blur-xl transition-all hover:scale-110 active:scale-95 border border-white/10",
+              isMuted ? "bg-red-500/20 text-red-500 border-red-500/50" : "bg-white/10 text-white hover:bg-white/20"
+            )}
             onClick={toggleMute}
           >
             {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
           </Button>
 
-          {/* Middle: Disconnect Button + Selfie Preview */}
+          {/* Middle Call/Hangup Button */}
           {isConnecting || isConnected ? (
-            <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <Button
-                size="icon"
-                variant="outline"
-                className="rounded-full w-14 h-14 border-red-500/50 text-red-500 bg-red-500/10 hover:bg-red-500/20 backdrop-blur-md transition-all border-2"
-                onClick={() => window.location.reload()}
-              >
-                <PhoneOff className="w-6 h-6" />
-              </Button>
-
-              {localStream && (
-                <div className="w-32 md:w-40 aspect-video rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl">
-                  <VideoDisplay
-                    stream={localStream}
-                    isLocal={true}
-                    muted={true}
-                    showLabel={false}
-                    className="w-full h-full border-0"
-                  />
-                </div>
-              )}
-            </div>
+            <Button
+              size="icon"
+              className="rounded-full w-16 h-16 border-2 border-red-500 text-red-500 bg-red-500/10 hover:bg-red-500/20 backdrop-blur-xl shadow-[0_0_30px_rgba(239,68,68,0.3)] transition-all hover:scale-110 active:scale-90"
+              onClick={() => window.location.reload()}
+            >
+              <PhoneOff className="w-7 h-7" />
+            </Button>
           ) : (
-            <div className="mb-2">
-              <Button
-                size="lg"
-                className="rounded-full px-10 h-14 shadow-2xl font-bold tracking-wide transition-all duration-300 bg-green-500 hover:bg-green-600 hover:shadow-green-500/20 text-white text-lg"
-                onClick={callHome}
-              >
-                <Phone className="w-6 h-6 mr-3" />
-                Call Home
-              </Button>
-            </div>
+            <Button
+              size="lg"
+              className="rounded-full px-10 h-16 shadow-2xl font-bold tracking-wider transition-all hover:scale-105 active:scale-95 bg-green-500/80 hover:bg-green-600 backdrop-blur-xl text-white text-lg uppercase"
+              onClick={callHome}
+            >
+              <Phone className="w-6 h-6 mr-3" />
+              Call Home
+            </Button>
           )}
 
-          {/* Right: Video Toggle Button */}
+          {/* Camera Button - Semi-Transparent */}
           <Button
             size="icon"
-            variant={!isVideoEnabled ? "destructive" : "secondary"}
-            className="rounded-full w-14 h-14 shadow-2xl backdrop-blur-md hover:scale-110 transition-transform mb-2"
+            className={cn(
+              "rounded-full w-14 h-14 shadow-2xl backdrop-blur-xl transition-all hover:scale-110 active:scale-95 border border-white/10",
+              !isVideoEnabled ? "bg-red-500/20 text-red-500 border-red-500/50" : "bg-white/10 text-white hover:bg-white/20"
+            )}
             onClick={toggleVideo}
           >
             {!isVideoEnabled ? <CameraOff className="w-6 h-6" /> : <Camera className="w-6 h-6" />}
           </Button>
 
-          <button onClick={unpair} className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-[10px] text-white/20 hover:text-white transition-colors uppercase tracking-widest font-black">Reset Pair</button>
+          <button onClick={unpair} className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] text-white/10 hover:text-white transition-colors uppercase tracking-[0.3em] font-black">Reset Pairing</button>
         </div>
 
       </div>
