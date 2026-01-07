@@ -38,38 +38,55 @@ export function useWebRTC(role: "home" | "remote") {
     console.log(`[WebRTC] ${msg}`);
   }, []);
 
-  // Initialize WebSocket
+  // Initialize WebSocket with Auto-Reconnect
   useEffect(() => {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    // Use env var for split hosting (Vercel -> Render), fallback to relative for monolithic
-    const wsUrl = import.meta.env.VITE_WS_URL || `wss://api.maahome.in/ws`;
+    let reconnectTimer: NodeJS.Timeout | null = null;
+    let isMounted = true;
 
-    addLog(`WebSocket Target: ${wsUrl}`);
-    addLog(`Connecting to WebSocket...`);
-    const ws = new WebSocket(wsUrl);
-    wsRef.current = ws;
+    const connect = () => {
+      const wsUrl = import.meta.env.VITE_WS_URL || `wss://api.maahome.in/ws`;
 
-    ws.onopen = () => {
-      addLog("WebSocket Connected");
-      ws.send(JSON.stringify({ type: WS_EVENTS.JOIN, payload: { role } }));
+      addLog(`WebSocket Target: ${wsUrl}`);
+      addLog(`Connecting to WebSocket...`);
+
+      const ws = new WebSocket(wsUrl);
+      wsRef.current = ws;
+
+      ws.onopen = () => {
+        addLog("WebSocket Connected");
+        ws.send(JSON.stringify({ type: WS_EVENTS.JOIN, payload: { role } }));
+      };
+
+      ws.onmessage = async (event) => {
+        try {
+          const msg: WsMessage = JSON.parse(event.data);
+          handleSignalingMessage(msg);
+        } catch (err) {
+          addLog(`Error parsing WS message: ${err}`);
+        }
+      };
+
+      ws.onclose = () => {
+        if (!isMounted) return;
+        addLog("WebSocket Disconnected. Retrying in 5s...");
+        setState(prev => ({ ...prev, status: 'disconnected', isHomeOnline: false }));
+
+        // Auto-reconnect after 5 seconds
+        reconnectTimer = setTimeout(connect, 5000);
+      };
+
+      ws.onerror = (err) => {
+        addLog("WebSocket Error occurred.");
+      };
     };
 
-    ws.onmessage = async (event) => {
-      try {
-        const msg: WsMessage = JSON.parse(event.data);
-        handleSignalingMessage(msg);
-      } catch (err) {
-        addLog(`Error parsing WS message: ${err}`);
-      }
-    };
-
-    ws.onclose = () => {
-      addLog("WebSocket Disconnected");
-      setState(prev => ({ ...prev, status: 'disconnected', isHomeOnline: false }));
-    };
+    connect();
 
     return () => {
-      ws.close();
+      isMounted = false;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (wsRef.current) wsRef.current.close();
+
       if (disconnectTimeoutRef.current) {
         clearTimeout(disconnectTimeoutRef.current);
       }

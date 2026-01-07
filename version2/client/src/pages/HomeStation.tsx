@@ -27,7 +27,10 @@ export default function HomeStation() {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isStarted, setIsStarted] = useState(false);
+  const [isStarted, setIsStarted] = useState(() => {
+    // skip "SYSTEM READY" if already paired
+    return localStorage.getItem("intercom_pairing") !== null;
+  });
   const [localScreensavers, setLocalScreensavers] = useState<string[]>([]);
   const [showManualInput, setShowManualInput] = useState(false);
   const [manualKey, setManualKey] = useState("");
