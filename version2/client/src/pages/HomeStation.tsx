@@ -4,7 +4,7 @@ import { VideoDisplay } from "@/components/VideoDisplay";
 import { LogConsole } from "@/components/LogConsole";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, ShieldCheck, Mic, MicOff, Camera, CameraOff, QrCode, Maximize2, ArrowLeft } from "lucide-react";
+import { Loader2, ShieldCheck, Mic, MicOff, Camera, CameraOff, QrCode, Maximize2, ArrowLeft, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
 import { usePairing } from "@/hooks/use-pairing";
