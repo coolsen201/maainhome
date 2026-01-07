@@ -44,7 +44,8 @@ export function useWebRTC(role: "home" | "remote") {
     // Use env var for split hosting (Vercel -> Render), fallback to relative for monolithic
     const wsUrl = import.meta.env.VITE_WS_URL || `wss://api.maahome.in/ws`;
 
-    addLog(`Connecting to WebSocket at ${wsUrl}...`);
+    addLog(`WebSocket Target: ${wsUrl}`);
+    addLog(`Connecting to WebSocket...`);
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 
