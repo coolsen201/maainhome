@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { Monitor, Smartphone, Video, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 
@@ -14,6 +14,15 @@ export default function Landing() {
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
+
+  // Auto-logout if arriving back at landing (security measure)
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        supabase.auth.signOut();
+      }
+    });
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,9 +38,9 @@ export default function Landing() {
 
       toast({
         title: "Login Successful",
-        description: "Welcome back to Mom in Home.",
+        description: "Welcome to your Hub.",
       });
-      setLocation("/dashboard");
+      setLocation("/hub");
     } catch (error: any) {
       toast({
         variant: "destructive",

@@ -313,9 +313,9 @@ export default function HomeStation() {
     <div ref={containerRef} className="fixed inset-0 bg-black overflow-hidden select-none">
       {/* Back Button for Feed */}
       {!remoteStream && (
-        <Link href="/dashboard" className="absolute top-8 left-8 z-[100] inline-flex items-center text-xs font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors group">
+        <Link href="/hub" className="absolute top-8 left-8 z-[100] inline-flex items-center text-xs font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors group">
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          Back
+          Back to Hub
         </Link>
       )}
 

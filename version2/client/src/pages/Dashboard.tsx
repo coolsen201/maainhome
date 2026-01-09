@@ -282,9 +282,9 @@ export default function Dashboard() {
                 {/* Header */}
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
                     <div className="space-y-2">
-                        <Link href="/" className="inline-flex items-center text-xs font-bold tracking-widest uppercase text-black hover:text-red-600 transition-colors group mb-4">
+                        <Link href="/hub" className="inline-flex items-center text-xs font-bold tracking-widest uppercase text-black hover:text-red-600 transition-colors group mb-4">
                             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                            Back
+                            Back to Hub
                         </Link>
                         <h1 className="text-3xl font-bold tracking-tight text-red-600">Dashboard</h1>
                         <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-black italic leading-none">

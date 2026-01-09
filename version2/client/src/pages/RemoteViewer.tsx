@@ -3,7 +3,7 @@ import { useWebRTC } from "@/hooks/use-webrtc";
 import { isAndroid } from "@/lib/platform";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { Button } from "@/components/ui/button";
-import { Phone, PhoneOff, Mic, MicOff, Camera, CameraOff, Loader2, ShieldCheck, FileKey, Smartphone, ArrowLeft } from "lucide-react";
+import { Phone, PhoneOff, Mic, MicOff, Camera, CameraOff, Loader2, ShieldCheck, FileKey, Smartphone, ArrowLeft, Image as ImageIcon, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
@@ -94,9 +94,9 @@ export default function RemoteViewer() {
   if (!isPaired) {
     return (
       <div className="min-h-screen bg-blue-900 flex flex-col items-center justify-center p-6 text-white relative">
-        <Link href="/dashboard" className="absolute top-8 left-8 inline-flex items-center text-xs font-bold tracking-widest uppercase text-white/40 hover:text-green-500 transition-colors group">
+        <Link href="/hub" className="absolute top-8 left-8 inline-flex items-center text-xs font-bold tracking-widest uppercase text-white/40 hover:text-green-500 transition-colors group">
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          Back to Dashboard
+          Back to Hub
         </Link>
         <div className="w-24 h-24 mb-6 bg-green-500 rounded-3xl flex items-center justify-center shadow-[0_0_50px_rgba(34,197,94,0.3)]">
           <Smartphone className="w-12 h-12 text-white" />
@@ -145,9 +145,9 @@ export default function RemoteViewer() {
     <div className="fixed inset-0 bg-[#3d2b1f] overflow-hidden select-none">
       {/* Navigation for Standalone App */}
       {!isConnected && !isConnecting && (
-        <Link href="/dashboard" className="absolute top-8 left-8 z-[100] inline-flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl backdrop-blur-xl transition-all group">
-          <ImageIcon className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
-          <span className="text-[10px] font-bold tracking-widest uppercase text-white/40 group-hover:text-white transition-colors">Dashboard</span>
+        <Link href="/hub" className="absolute top-8 left-8 z-[100] inline-flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl backdrop-blur-xl transition-all group">
+          <Home className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
+          <span className="text-[10px] font-bold tracking-widest uppercase text-white/40 group-hover:text-white transition-colors">Safety Hub</span>
         </Link>
       )}
 
