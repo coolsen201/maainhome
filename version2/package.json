@@ -131,6 +131,11 @@
       "target": [
         "AppImage"
       ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
     }
   }
 }
