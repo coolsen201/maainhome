@@ -143,11 +143,11 @@ export default function RemoteViewer() {
 
   return (
     <div className="fixed inset-0 bg-[#3d2b1f] overflow-hidden select-none">
-      {/* Back Button for Feed (Hidden on Android for standalone feel) */}
-      {!isConnected && !isConnecting && !isAndroid && (
-        <Link href="/dashboard" className="absolute top-8 left-8 z-[100] inline-flex items-center text-xs font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors group">
-          <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          Back
+      {/* Navigation for Standalone App */}
+      {!isConnected && !isConnecting && (
+        <Link href="/dashboard" className="absolute top-8 left-8 z-[100] inline-flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl backdrop-blur-xl transition-all group">
+          <Settings className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
+          <span className="text-[10px] font-bold tracking-widest uppercase text-white/40 group-hover:text-white transition-colors">System Dashboard</span>
         </Link>
       )}
 

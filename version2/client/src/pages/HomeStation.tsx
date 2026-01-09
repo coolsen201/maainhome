@@ -61,7 +61,9 @@ export default function HomeStation() {
 
   const screensaverImages = localScreensavers.length > 0
     ? localScreensavers
-    : (authProfile?.screensaver_photos?.length > 0 ? authProfile.screensaver_photos : DEFAULT_IMAGES);
+    : ((authProfile?.screensaver_photos || []).filter((url: string | null) => !!url).length > 0
+      ? authProfile.screensaver_photos.filter((url: string | null) => !!url)
+      : DEFAULT_IMAGES);
 
   // Auto-start local stream on mount if paired and started
   useEffect(() => {

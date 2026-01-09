@@ -26,8 +26,32 @@ export function useAuth() {
             setLoading(false);
         });
 
-        return () => subscription.unsubscribe();
-    }, []);
+        // Add Realtime subscription for profile updates
+        let profileChannel: any = null;
+        if (user) {
+            profileChannel = supabase
+                .channel(`profile-updates-${user.id}`)
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'profiles',
+                        filter: `id=eq.${user.id}`
+                    },
+                    (payload) => {
+                        console.log('Profile updated via realtime:', payload.new);
+                        setProfile(payload.new);
+                    }
+                )
+                .subscribe();
+        }
+
+        return () => {
+            subscription.unsubscribe();
+            if (profileChannel) supabase.removeChannel(profileChannel);
+        };
+    }, [user?.id]);
 
     const fetchProfile = async (userId: string) => {
         try {
