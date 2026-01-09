@@ -21,6 +21,10 @@ export default function Dashboard() {
     const [photos, setPhotos] = useState<Array<string | null>>(Array(11).fill(null));
     const [isConverting, setIsConverting] = useState<number | null>(null);
     const [showQRModal, setShowQRModal] = useState(false);
+    const { pairDeviceWithCode, generatePairingCode } = usePairing();
+    const [pairingCode, setPairingCode] = useState("");
+    const [isPairing, setIsPairing] = useState(false);
+    const [qrToken, setQrToken] = useState<string | null>(null);
 
     // Redirect if not logged in
     useEffect(() => {
@@ -215,9 +219,6 @@ export default function Dashboard() {
         document.body.removeChild(element);
     };
 
-    const { pairDeviceWithCode, generatePairingCode } = usePairing();
-    const [pairingCode, setPairingCode] = useState("");
-    const [isPairing, setIsPairing] = useState(false);
 
     const handlePairWithCode = async () => {
         if (pairingCode.length !== 6 || !profile?.secure_key) {
@@ -237,8 +238,6 @@ export default function Dashboard() {
             setIsPairing(false);
         }
     };
-
-    const [qrToken, setQrToken] = useState<string | null>(null);
 
     const handleGenerateQR = async () => {
         if (!profile?.secure_key || !user) {
