@@ -305,138 +305,136 @@ export default function Dashboard() {
                     </div>
                 </header>
 
-                <div className="max-w-7xl mx-auto space-y-12">
-                    {/* Main Management Hub */}
-                    <div className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-2xl space-y-12">
-                        <div className="text-center space-y-2">
-                            <h2 className="text-xs font-bold tracking-[0.3em] uppercase text-black/20">System Management</h2>
-                            <p className="text-lg font-bold text-black italic">Manage your secure connection and pair new devices</p>
-                        </div>
+                {/* Main Management Hub */}
+                <div className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-2xl space-y-12">
+                    <div className="text-center space-y-2">
+                        <h2 className="text-xs font-bold tracking-[0.3em] uppercase text-black/20">System Management</h2>
+                        <p className="text-lg font-bold text-black italic">Manage your secure connection and pair new devices</p>
+                    </div>
 
-                        <div className="grid md:grid-cols-2 gap-8">
-                            {/* Merged Step 1 & 2: Download the Android Key */}
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={handleDownloadKey}
-                                className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] bg-red-50 border border-red-100 hover:bg-red-100 transition-all group gap-6 text-center"
-                            >
-                                <div className="w-20 h-20 rounded-3xl bg-red-600 flex items-center justify-center shadow-lg group-hover:shadow-red-600/20 transition-all">
-                                    <Smartphone className="w-10 h-10 text-white" />
-                                </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-sm font-black tracking-widest uppercase text-red-600">Action 1</h3>
-                                    <p className="text-xl font-bold text-black uppercase leading-tight">Download the<br />Android Key</p>
-                                    <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Generates & Saves to Device</p>
-                                </div>
-                            </motion.button>
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {/* Merged Step 1 & 2: Download the Android Key */}
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={handleDownloadKey}
+                            className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] bg-red-50 border border-red-100 hover:bg-red-100 transition-all group gap-6 text-center"
+                        >
+                            <div className="w-20 h-20 rounded-3xl bg-red-600 flex items-center justify-center shadow-lg group-hover:shadow-red-600/20 transition-all">
+                                <Smartphone className="w-10 h-10 text-white" />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-sm font-black tracking-widest uppercase text-red-600">Action 1</h3>
+                                <p className="text-xl font-bold text-black uppercase leading-tight">Download the<br />Android Key</p>
+                                <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Generates & Saves to Device</p>
+                            </div>
+                        </motion.button>
 
-                            {/* Step 3: Generate Code for Home Session (Now Action 2) */}
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={handleGenerateQR}
-                                className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] bg-green-50 border border-green-100 hover:bg-green-100 transition-all group gap-6 text-center"
-                            >
-                                <div className="w-20 h-20 rounded-3xl bg-green-600 flex items-center justify-center shadow-lg group-hover:shadow-green-600/20 transition-all">
-                                    <Monitor className="w-10 h-10 text-white" />
-                                </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-sm font-black tracking-widest uppercase text-green-600">Action 2</h3>
-                                    <p className="text-xl font-bold text-black uppercase leading-tight">Generate Code<br />for Home Session</p>
-                                    <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Quick Pairing for Station</p>
-                                </div>
-                            </motion.button>
-                        </div>
+                        {/* Step 3: Generate Code for Home Session (Now Action 2) */}
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={handleGenerateQR}
+                            className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] bg-green-50 border border-green-100 hover:bg-green-100 transition-all group gap-6 text-center"
+                        >
+                            <div className="w-20 h-20 rounded-3xl bg-green-600 flex items-center justify-center shadow-lg group-hover:shadow-green-600/20 transition-all">
+                                <Monitor className="w-10 h-10 text-white" />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-sm font-black tracking-widest uppercase text-green-600">Action 2</h3>
+                                <p className="text-xl font-bold text-black uppercase leading-tight">Generate Code<br />for Home Session</p>
+                                <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Quick Pairing for Station</p>
+                            </div>
+                        </motion.button>
+                    </div>
 
-                        <div className="pt-8 border-t border-gray-100">
-                            <div className="flex flex-col items-center gap-2">
-                                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-black/20">System Security Status</span>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                    <span className="text-xs font-mono font-black text-green-600 uppercase tracking-wider">
-                                        End-to-End Encryption Active
-                                    </span>
-                                </div>
+                    <div className="pt-8 border-t border-gray-100">
+                        <div className="flex flex-col items-center gap-2">
+                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-black/20">System Security Status</span>
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                <span className="text-xs font-mono font-black text-green-600 uppercase tracking-wider">
+                                    End-to-End Encryption Active
+                                </span>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    {/* Photo Management Hub */}
-                    <div className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-2xl space-y-12">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div className="text-center md:text-left space-y-2">
-                                <h2 className="text-xs font-bold tracking-[0.3em] uppercase text-black/20">Family Asset Management</h2>
-                                <p className="text-lg font-bold text-black italic">Upload photos for Home Station & Remote profile</p>
-                            </div>
-                            <div className="px-4 py-2 bg-green-50 border border-green-100 rounded-full flex items-center gap-3">
-                                <div className="w-2 h-2 rounded-full bg-green-500 animate-bounce" />
-                                <span className="text-[10px] font-black tracking-widest uppercase text-green-700">Auto-convert to PNG ready</span>
-                            </div>
+                {/* Photo Management Hub */}
+                <div className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-2xl space-y-12">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="text-center md:text-left space-y-2">
+                            <h2 className="text-xs font-bold tracking-[0.3em] uppercase text-black/20">Family Asset Management</h2>
+                            <p className="text-lg font-bold text-black italic">Upload photos for Home Station & Remote profile</p>
                         </div>
+                        <div className="px-4 py-2 bg-green-50 border border-green-100 rounded-full flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-green-500 animate-bounce" />
+                            <span className="text-[10px] font-black tracking-widest uppercase text-green-700">Auto-convert to PNG ready</span>
+                        </div>
+                    </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                            {photos.map((photo, index) => (
-                                <motion.div
-                                    key={index}
-                                    onClick={() => handlePhotoUpload(index)}
-                                    whileHover={{ scale: 1.05 }}
-                                    className={`aspect-square bg-white rounded-[2rem] border transition-all overflow-hidden relative group cursor-pointer ${index === 10 ? 'border-red-500/30' : 'border-gray-100 shadow-sm'
-                                        }`}
-                                >
-                                    {isConverting === index ? (
-                                        <div className="w-full h-full flex flex-col items-center justify-center bg-white/80">
-                                            <div className="w-8 h-8 rounded-full border-4 border-green-600 border-t-transparent animate-spin mb-2" />
-                                            <span className="text-[8px] font-bold text-green-600 tracking-[0.3em] uppercase text-center">Processing<br />Canvas PNG</span>
-                                        </div>
-                                    ) : photo ? (
-                                        <img src={photo} className="w-full h-full object-cover" alt={photoLabels[index]} />
-                                    ) : (
-                                        <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center space-y-2 bg-gray-50 group-hover:bg-gray-100 transition-colors">
-                                            <div className={`w-10 h-10 rounded-2xl border-2 border-dashed flex items-center justify-center transition-colors ${index === 10 ? 'border-red-500/50 group-hover:border-red-600' : 'border-gray-300 group-hover:border-green-600'
-                                                }`}>
-                                                <Plus className={`w-4 h-4 transition-colors ${index === 10 ? 'text-red-600' : 'text-gray-400 group-hover:text-green-600'
-                                                    }`} />
-                                            </div>
-                                            <span className={`text-[10px] font-bold tracking-wider uppercase transition-colors ${index === 10 ? 'text-red-600' : 'text-black/20 group-hover:text-black/40'
-                                                }`}>
-                                                {photoLabels[index]}
-                                            </span>
-                                        </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <div className="flex flex-col items-center gap-2">
-                                            <Upload className="w-6 h-6 text-white" />
-                                            <span className="text-[8px] font-bold text-white/60 tracking-widest uppercase">Tap to Upload</span>
-                                        </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        {photos.map((photo, index) => (
+                            <motion.div
+                                key={index}
+                                onClick={() => handlePhotoUpload(index)}
+                                whileHover={{ scale: 1.05 }}
+                                className={`aspect-square bg-white rounded-[2rem] border transition-all overflow-hidden relative group cursor-pointer ${index === 10 ? 'border-red-500/30' : 'border-gray-100 shadow-sm'
+                                    }`}
+                            >
+                                {isConverting === index ? (
+                                    <div className="w-full h-full flex flex-col items-center justify-center bg-white/80">
+                                        <div className="w-8 h-8 rounded-full border-4 border-green-600 border-t-transparent animate-spin mb-2" />
+                                        <span className="text-[8px] font-bold text-green-600 tracking-[0.3em] uppercase text-center">Processing<br />Canvas PNG</span>
                                     </div>
-                                </motion.div>
-                            ))}
+                                ) : photo ? (
+                                    <img src={photo} className="w-full h-full object-cover" alt={photoLabels[index]} />
+                                ) : (
+                                    <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center space-y-2 bg-gray-50 group-hover:bg-gray-100 transition-colors">
+                                        <div className={`w-10 h-10 rounded-2xl border-2 border-dashed flex items-center justify-center transition-colors ${index === 10 ? 'border-red-500/50 group-hover:border-red-600' : 'border-gray-300 group-hover:border-green-600'
+                                            }`}>
+                                            <Plus className={`w-4 h-4 transition-colors ${index === 10 ? 'text-red-600' : 'text-gray-400 group-hover:text-green-600'
+                                                }`} />
+                                        </div>
+                                        <span className={`text-[10px] font-bold tracking-wider uppercase transition-colors ${index === 10 ? 'text-red-600' : 'text-black/20 group-hover:text-black/40'
+                                            }`}>
+                                            {photoLabels[index]}
+                                        </span>
+                                    </div>
+                                )}
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Upload className="w-6 h-6 text-white" />
+                                        <span className="text-[8px] font-bold text-white/60 tracking-widest uppercase">Tap to Upload</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div className="p-8 rounded-[2.5rem] bg-gray-50 border border-gray-100 flex items-start gap-6">
+                            <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm shrink-0">
+                                <Monitor className="w-6 h-6 text-blue-600" />
+                            </div>
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-black uppercase tracking-tight">Screensaver Sequence</h4>
+                                <p className="text-xs text-black/60 leading-relaxed font-medium">
+                                    Upload up to 10 photos to rotate on the **Home Station** while idle. These will become the interactive background for the Lenovo station.
+                                </p>
+                            </div>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-8">
-                            <div className="p-8 rounded-[2.5rem] bg-gray-50 border border-gray-100 flex items-start gap-6">
-                                <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm shrink-0">
-                                    <Monitor className="w-6 h-6 text-blue-600" />
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="font-bold text-black uppercase tracking-tight">Screensaver Sequence</h4>
-                                    <p className="text-xs text-black/60 leading-relaxed font-medium">
-                                        Upload up to 10 photos to rotate on the **Home Station** while idle. These will become the interactive background for the Lenovo station.
-                                    </p>
-                                </div>
+                        <div className="p-8 rounded-[2.5rem] bg-red-50 border border-red-100 flex items-start gap-6">
+                            <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm shrink-0">
+                                <Smartphone className="w-6 h-6 text-red-600" />
                             </div>
-
-                            <div className="p-8 rounded-[2.5rem] bg-red-50 border border-red-100 flex items-start gap-6">
-                                <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm shrink-0">
-                                    <Smartphone className="w-6 h-6 text-red-600" />
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="font-bold text-black uppercase tracking-tight">Mom's Remote ID</h4>
-                                    <p className="text-xs text-black/60 leading-relaxed font-medium">
-                                        The 11th slot is your **Global Profile**. This photo is shown on the Home Station when you call, making the connection feel personal.
-                                    </p>
-                                </div>
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-black uppercase tracking-tight">Mom's Remote ID</h4>
+                                <p className="text-xs text-black/60 leading-relaxed font-medium">
+                                    The 11th slot is your **Global Profile**. This photo is shown on the Home Station when you call, making the connection feel personal.
+                                </p>
                             </div>
                         </div>
                     </div>

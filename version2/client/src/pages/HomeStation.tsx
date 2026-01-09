@@ -320,11 +320,13 @@ export default function HomeStation() {
       {/* Main Full-Screen Area */}
       <div className="relative w-full h-full">
         {/* Main View: Remote Stream (The caller) */}
-        {remoteStream ? (
+        {(remoteStream || status === "connecting" || status === "connected") ? (
           <VideoDisplay
             stream={remoteStream}
             className="w-full h-full bg-black border-0 rounded-0"
             label="Remote Caller"
+            offlineImage={authProfile?.selfie_photo || "/Indian_grandmother.png"}
+            offlineText={`${authProfile?.full_name || 'Mom'} is connecting...`}
             showStatus={true}
           />
         ) : (
