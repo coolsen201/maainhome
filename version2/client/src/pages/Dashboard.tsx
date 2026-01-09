@@ -282,7 +282,7 @@ export default function Dashboard() {
                 {/* Header */}
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
                     <div className="space-y-2">
-                        <Link href="/" className="inline-flex items-center text-xs font-bold tracking-widest uppercase text-black/40 hover:text-red-600 transition-colors group mb-4">
+                        <Link href="/" className="inline-flex items-center text-xs font-bold tracking-widest uppercase text-black hover:text-red-600 transition-colors group mb-4">
                             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                             Back
                         </Link>
@@ -309,7 +309,7 @@ export default function Dashboard() {
                     {/* LEFT COLUMN: Actions */}
                     <div className="space-y-12">
                         <div className="space-y-4">
-                            <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-black/20">System Management</h2>
+                            <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-black/60">System Management</h2>
                             <p className="text-2xl font-bold text-black italic leading-tight">create your secure connection and home new devices</p>
                         </div>
 
@@ -327,7 +327,7 @@ export default function Dashboard() {
                                 <div className="space-y-1">
                                     <h3 className="text-[10px] font-black tracking-widest uppercase text-red-600">Action 1</h3>
                                     <p className="text-xl font-extrabold text-black uppercase">Download the Android Key</p>
-                                    <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Secure Link for Mobile</p>
+                                    <p className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Secure Link for Mobile</p>
                                 </div>
                             </motion.button>
 
@@ -344,7 +344,7 @@ export default function Dashboard() {
                                 <div className="space-y-1">
                                     <h3 className="text-[10px] font-black tracking-widest uppercase text-green-600">Action 2</h3>
                                     <p className="text-xl font-extrabold text-black uppercase">Generate Code for Home Session</p>
-                                    <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Instant Pairing for Station</p>
+                                    <p className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Instant Pairing for Station</p>
                                 </div>
                             </motion.button>
                         </div>
@@ -352,7 +352,7 @@ export default function Dashboard() {
                         <div className="p-8 rounded-[2rem] bg-black/5 backdrop-blur-sm border border-black/5 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-[10px] font-mono font-black text-black/40 uppercase tracking-widest">
+                                <span className="text-[10px] font-mono font-black text-black uppercase tracking-widest">
                                     End-to-End Encryption Active
                                 </span>
                             </div>
@@ -366,7 +366,7 @@ export default function Dashboard() {
                     {/* RIGHT COLUMN: Photo Hub */}
                     <div className="space-y-8 bg-white/40 p-10 rounded-[3rem] border border-white/20 shadow-xl backdrop-blur-sm">
                         <div className="space-y-1">
-                            <h2 className="text-[10px] font-bold tracking-[0.3em] uppercase text-black/20">Family Asset Management</h2>
+                            <h2 className="text-[10px] font-bold tracking-[0.3em] uppercase text-black/60">Family Asset Management</h2>
                             <p className="text-xl font-bold text-black italic">Upload photos for Home Station</p>
                         </div>
 
@@ -392,7 +392,7 @@ export default function Dashboard() {
                                                 <Plus className={`w-3 h-3 transition-colors ${index === 0 ? 'text-red-400' : 'text-gray-300 group-hover:text-green-500'
                                                     }`} />
                                             </div>
-                                            <span className={`text-[8px] font-black tracking-tight uppercase transition-colors ${index === 0 ? 'text-red-500' : 'text-black/20 group-hover:text-black/60'
+                                            <span className={`text-[8px] font-black tracking-tight uppercase transition-colors ${index === 0 ? 'text-red-500' : 'text-black group-hover:text-black'
                                                 }`}>
                                                 {photoLabels[index]}
                                             </span>
