@@ -271,7 +271,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-[#32939C] text-black p-6 md:p-12 relative overflow-hidden">
+        <div className="min-h-screen bg-[#2F7BCC] text-white p-6 md:p-12 relative overflow-hidden">
             {/* Background Decor */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[128px]" />
@@ -282,12 +282,12 @@ export default function Dashboard() {
                 {/* Header */}
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
                     <div className="space-y-2">
-                        <Link href="/hub" className="inline-flex items-center text-xs font-bold tracking-widest uppercase text-black hover:text-red-600 transition-colors group mb-4">
+                        <Link href="/hub" className="inline-flex items-center text-xs font-bold tracking-widest uppercase text-white/60 hover:text-white transition-colors group mb-4">
                             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                             Back to Hub
                         </Link>
-                        <h1 className="text-3xl font-bold tracking-tight text-red-600">Dashboard</h1>
-                        <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-black italic leading-none">
+                        <h1 className="text-3xl font-bold tracking-tight text-white">Dashboard</h1>
+                        <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white italic leading-none">
                             Mom in Home
                         </span>
                     </div>
@@ -309,8 +309,8 @@ export default function Dashboard() {
                     {/* LEFT COLUMN: Actions */}
                     <div className="space-y-12">
                         <div className="space-y-4">
-                            <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-black/60">System Management</h2>
-                            <p className="text-2xl font-bold text-black italic leading-tight">create your secure connection and home new devices</p>
+                            <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-white/40">System Management</h2>
+                            <p className="text-2xl font-bold text-white italic leading-tight">create your secure connection and home new devices</p>
                         </div>
 
                         <div className="space-y-6">
@@ -325,7 +325,7 @@ export default function Dashboard() {
                                     <Smartphone className="w-8 h-8 text-white" />
                                 </div>
                                 <div className="space-y-1">
-                                    <h3 className="text-[10px] font-black tracking-widest uppercase text-red-600">Action 1</h3>
+                                    <h3 className="text-[10px] font-black tracking-widest uppercase text-red-100">Action 1</h3>
                                     <p className="text-xl font-extrabold text-black uppercase">Download the Android Key</p>
                                     <p className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Secure Link for Mobile</p>
                                 </div>
@@ -342,7 +342,7 @@ export default function Dashboard() {
                                     <Monitor className="w-8 h-8 text-white" />
                                 </div>
                                 <div className="space-y-1">
-                                    <h3 className="text-[10px] font-black tracking-widest uppercase text-green-600">Action 2</h3>
+                                    <h3 className="text-[10px] font-black tracking-widest uppercase text-green-100">Action 2</h3>
                                     <p className="text-xl font-extrabold text-black uppercase">Generate Code for Home Session</p>
                                     <p className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Instant Pairing for Station</p>
                                 </div>
@@ -352,11 +352,11 @@ export default function Dashboard() {
                         <div className="p-8 rounded-[2rem] bg-black/5 backdrop-blur-sm border border-black/5 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-[10px] font-mono font-black text-black uppercase tracking-widest">
+                                <span className="text-[10px] font-mono font-black text-white uppercase tracking-widest">
                                     End-to-End Encryption Active
                                 </span>
                             </div>
-                            <ShieldCheck className="w-4 h-4 text-green-600" />
+                            <ShieldCheck className="w-4 h-4 text-green-400" />
                         </div>
                     </div>
 
@@ -364,10 +364,10 @@ export default function Dashboard() {
                     <div className="hidden lg:block w-1 h-full bg-gray-200/60 self-stretch rounded-full mx-auto shadow-sm" />
 
                     {/* RIGHT COLUMN: Photo Hub */}
-                    <div className="space-y-8 bg-white/40 p-10 rounded-[3rem] border border-white/20 shadow-xl backdrop-blur-sm">
+                    <div className="space-y-8 bg-white/10 p-10 rounded-[3rem] border border-white/10 shadow-xl backdrop-blur-sm">
                         <div className="space-y-1">
-                            <h2 className="text-[10px] font-bold tracking-[0.3em] uppercase text-black/60">Family Asset Management</h2>
-                            <p className="text-xl font-bold text-black italic">Upload photos for Home Station</p>
+                            <h2 className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/40">Family Asset Management</h2>
+                            <p className="text-xl font-bold text-white italic">Upload photos for Home Station</p>
                         </div>
 
                         <div className="grid grid-cols-4 gap-2">

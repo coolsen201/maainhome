@@ -108,53 +108,7 @@ export default function Landing() {
         </span>
       </motion.div>
 
-      <div className="grid md:grid-cols-3 gap-6 w-full max-w-6xl z-10 px-4">
-        <Link href="/home" className="group cursor-pointer">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="h-full glass-panel p-8 rounded-3xl border border-white/10 hover:border-primary/50 transition-colors flex flex-col items-center text-center space-y-6 group-hover:shadow-2xl group-hover:shadow-primary/10"
-          >
-            <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-              <Monitor className="w-10 h-10 text-white group-hover:text-primary transition-colors" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold text-white">Home Station</h2>
-              <p className="text-muted-foreground text-sm">
-                Deploy on your home device. Acts as the camera source and main receiver.
-              </p>
-            </div>
-            <div className="mt-auto pt-6 w-full">
-              <div className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium group-hover:bg-primary group-hover:border-primary transition-all">
-                Launch Station
-              </div>
-            </div>
-          </motion.div>
-        </Link>
-
-        <Link href="/remote" className="group cursor-pointer">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="h-full glass-panel p-8 rounded-3xl border border-white/10 hover:border-purple-500/50 transition-colors flex flex-col items-center text-center space-y-6 group-hover:shadow-2xl group-hover:shadow-purple-500/10"
-          >
-            <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
-              <Smartphone className="w-10 h-10 text-white group-hover:text-purple-400 transition-colors" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold text-white">Remote Viewer</h2>
-              <p className="text-muted-foreground text-sm">
-                Connect from your phone or laptop to view the stream and talk back.
-              </p>
-            </div>
-            <div className="mt-auto pt-6 w-full">
-              <div className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium group-hover:bg-purple-600 group-hover:border-purple-600 transition-all">
-                Connect Remote
-              </div>
-            </div>
-          </motion.div>
-        </Link>
-
+      <div className="flex justify-center w-full max-w-xl z-10 px-4">
         {/* Login Section */}
         <motion.div
           whileHover={{ scale: 1.02 }}

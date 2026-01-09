@@ -159,7 +159,7 @@ export default function RemoteViewer() {
           className="w-full h-full border-0 rounded-0"
           label="Home Feed"
           offlineImage={authProfile?.selfie_photo || "/Indian_grandmother.png"}
-          offlineText={`${authProfile?.full_name || 'Mom'} is Waiting In Home`}
+          offlineText="Mom is Waiting In Home"
           showLabel={false}
           showStatus={false}
         />
