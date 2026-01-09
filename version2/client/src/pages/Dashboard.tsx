@@ -301,185 +301,72 @@ export default function Dashboard() {
                     </div>
                 </header>
 
-                <div className="grid lg:grid-cols-3 gap-12">
-                    {/* Left Column: Quick Actions & Security */}
-                    <div className="lg:col-span-1 space-y-8">
-                        <div className="space-y-4">
-                            <h2 className="text-sm font-bold tracking-[0.2em] uppercase text-black/30 px-2">Launch Services</h2>
-                            <div className="space-y-4">
-                                <Link href="/home">
-                                    <motion.div
-                                        whileHover={{ scale: 1.02, x: 5 }}
-                                        className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-green-500/50 hover:shadow-lg cursor-pointer group transition-all"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-green-100 flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                                                <Monitor className="w-6 h-6 text-green-600" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-bold text-black group-hover:text-green-600 transition-colors">Home Station</h3>
-                                                <p className="text-xs text-black/40">Launch main camera unit</p>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                </Link>
-
-                                <Link href="/remote">
-                                    <motion.div
-                                        whileHover={{ scale: 1.02, x: 5 }}
-                                        className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-red-500/50 hover:shadow-lg cursor-pointer group transition-all"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                                                <Smartphone className="w-6 h-6 text-red-600" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-bold text-black group-hover:text-red-600 transition-colors">Remote Viewer</h3>
-                                                <p className="text-xs text-black/40">Connect from mobile device</p>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                </Link>
-                            </div>
+                <div className="max-w-4xl mx-auto">
+                    {/* Main Management Hub */}
+                    <div className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-2xl space-y-12">
+                        <div className="text-center space-y-2">
+                            <h2 className="text-xs font-bold tracking-[0.3em] uppercase text-black/20">System Management</h2>
+                            <p className="text-lg font-bold text-black italic">Manage your secure connection and pair new devices</p>
                         </div>
 
-                        {/* Security & Access Section */}
-                        <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 space-y-6">
-                            <h3 className="font-bold text-black flex items-center gap-2">
-                                <Smartphone className="w-4 h-4 text-green-600" />
-                                Security & Access
-                            </h3>
-
-                            <div className="space-y-4">
-                                <button
-                                    onClick={handleGenerateKey}
-                                    className="w-full py-4 rounded-2xl bg-red-600 border border-red-700 text-white text-xs font-bold tracking-widest uppercase hover:bg-red-700 transition-all shadow-lg flex items-center justify-center gap-3 group"
-                                >
-                                    <ShieldCheck className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                    Generate New Digital Key
-                                </button>
-
-                                <button
-                                    onClick={handleDownloadKey}
-                                    className="w-full py-4 rounded-2xl bg-white border border-gray-200 text-black text-xs font-bold tracking-widest uppercase hover:bg-gray-50 transition-all shadow-sm flex items-center justify-center gap-3 group"
-                                >
-                                    <Smartphone className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                    Download Android Key
-                                </button>
-
-                                <button
-                                    onClick={handleGenerateQR}
-                                    className="w-full py-4 rounded-2xl bg-white border border-gray-200 text-black text-xs font-bold tracking-widest uppercase hover:bg-gray-50 transition-all shadow-sm flex items-center justify-center gap-3 group"
-                                >
-                                    <Monitor className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                    Show Multi-Service QR
-                                </button>
-
-                                <div className="pt-6 border-t border-gray-100 space-y-4">
-                                    <label className="text-[10px] font-bold tracking-widest uppercase text-black/40 px-2">Link Home Station</label>
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            maxLength={6}
-                                            value={pairingCode}
-                                            onChange={(e) => setPairingCode(e.target.value)}
-                                            placeholder="6-digit code"
-                                            className="flex-1 bg-white border border-gray-200 rounded-xl px-4 text-center font-mono text-lg tracking-widest outline-none focus:ring-1 focus:ring-red-500/50"
-                                        />
-                                        <button
-                                            onClick={handlePairWithCode}
-                                            disabled={isPairing || pairingCode.length !== 6}
-                                            className="bg-green-600 hover:bg-green-700 text-white px-4 rounded-xl font-bold text-xs uppercase transition-all disabled:opacity-50"
-                                        >
-                                            {isPairing ? "..." : "Link"}
-                                        </button>
-                                    </div>
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {/* 1. Generate New Key for Android */}
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={handleGenerateKey}
+                                className="flex flex-col items-center justify-center p-8 rounded-[2rem] bg-red-50 border border-red-100 hover:bg-red-100 transition-all group gap-4 text-center"
+                            >
+                                <div className="w-16 h-16 rounded-2xl bg-red-600 flex items-center justify-center shadow-lg group-hover:shadow-red-600/20 transition-all">
+                                    <ShieldCheck className="w-8 h-8 text-white" />
                                 </div>
-                            </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-xs font-black tracking-widest uppercase text-red-600">Step 1</h3>
+                                    <p className="text-xs font-bold text-black uppercase">Generate New Key<br />for Android</p>
+                                </div>
+                            </motion.button>
 
-                            <div className="pt-4 border-t border-gray-200">
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-[10px] font-bold tracking-widest uppercase text-black/20">Key Validity Period</span>
-                                    <span className="text-sm font-mono text-green-600">
-                                        Valid until: {profile?.key_expiry ? new Date(profile.key_expiry).toLocaleDateString() : 'Loading...'}
+                            {/* 2. Download the Key */}
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={handleDownloadKey}
+                                className="flex flex-col items-center justify-center p-8 rounded-[2rem] bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-all group gap-4 text-center"
+                            >
+                                <div className="w-16 h-16 rounded-2xl bg-black flex items-center justify-center shadow-lg transition-all">
+                                    <Smartphone className="w-8 h-8 text-white" />
+                                </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-xs font-black tracking-widest uppercase text-black/20">Step 2</h3>
+                                    <p className="text-xs font-bold text-black uppercase">Download<br />the Key</p>
+                                </div>
+                            </motion.button>
+
+                            {/* 3. Generate Code for Home Session */}
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={handleGenerateQR}
+                                className="flex flex-col items-center justify-center p-8 rounded-[2rem] bg-green-50 border border-green-100 hover:bg-green-100 transition-all group gap-4 text-center"
+                            >
+                                <div className="w-16 h-16 rounded-2xl bg-green-600 flex items-center justify-center shadow-lg group-hover:shadow-green-600/20 transition-all">
+                                    <Monitor className="w-8 h-8 text-white" />
+                                </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-xs font-black tracking-widest uppercase text-green-600">Step 3</h3>
+                                    <p className="text-xs font-bold text-black uppercase">Generate Code<br />for Home Session</p>
+                                </div>
+                            </motion.button>
+                        </div>
+
+                        <div className="pt-8 border-t border-gray-100">
+                            <div className="flex flex-col items-center gap-2">
+                                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-black/20">Current Key Security Status</span>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="text-sm font-mono font-bold text-green-600">
+                                        Encryption Active (Valid until: {profile?.key_expiry ? new Date(profile.key_expiry).toLocaleDateString() : 'Loading...'})
                                     </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Column: Photo Management */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="flex items-center justify-between px-2">
-                            <h2 className="text-sm font-bold tracking-[0.2em] uppercase text-black/30">Family Asset Management</h2>
-                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-green-600 animate-pulse">Auto-convert to PNG active</span>
-                        </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {photos.map((photo, index) => (
-                                <motion.div
-                                    key={index}
-                                    onClick={() => handlePhotoUpload(index)}
-                                    whileHover={{ scale: 1.05 }}
-                                    className={`aspect-square bg-white rounded-2xl border transition-all overflow-hidden relative group cursor-pointer ${index === 10 ? 'border-red-500/30' : 'border-gray-100 shadow-sm'
-                                        }`}
-                                >
-                                    {isConverting === index ? (
-                                        <div className="w-full h-full flex flex-col items-center justify-center bg-white/80">
-                                            <div className="w-8 h-8 rounded-full border-2 border-green-600 border-t-transparent animate-spin mb-2" />
-                                            <span className="text-[8px] font-bold text-green-600 tracking-[0.3em] uppercase">PNG Convert</span>
-                                        </div>
-                                    ) : photo ? (
-                                        <img src={photo} className="w-full h-full object-cover" alt={photoLabels[index]} />
-                                    ) : (
-                                        <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center space-y-2 bg-gray-50 group-hover:bg-gray-100 transition-colors">
-                                            <div className={`w-10 h-10 rounded-full border border-dashed flex items-center justify-center transition-colors ${index === 10 ? 'border-red-500/50 group-hover:border-red-600' : 'border-gray-300 group-hover:border-green-600'
-                                                }`}>
-                                                <Plus className={`w-4 h-4 transition-colors ${index === 10 ? 'text-red-600' : 'text-gray-400 group-hover:text-green-600'
-                                                    }`} />
-                                            </div>
-                                            <span className={`text-[10px] font-bold tracking-wider uppercase transition-colors ${index === 10 ? 'text-red-600' : 'text-black/20 group-hover:text-black/40'
-                                                }`}>
-                                                {photoLabels[index]}
-                                            </span>
-                                        </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <div className="flex flex-col items-center gap-2">
-                                            <Upload className="w-5 h-5 text-white" />
-                                            <span className="text-[8px] font-bold text-white/60 tracking-widest uppercase">Select & Convert</span>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="p-6 rounded-[2.2rem] bg-green-50 border border-green-100">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
-                                        <ImageIcon className="w-5 h-5 text-green-600" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-black mb-1">Screensaver Logic</h4>
-                                        <p className="text-[10px] text-black/60 leading-relaxed">
-                                            The top 10 photos are loaded for the **Home Station** screensaver. They rotate automatically when the station is idle.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="p-6 rounded-[2.2rem] bg-red-50 border border-red-100">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
-                                        <Smartphone className="w-5 h-5 text-red-600" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-black mb-1">Remote Selfie</h4>
-                                        <p className="text-[10px] text-black/60 leading-relaxed">
-                                            Slot 11 is dedicated to the **Remote Viewer**. This image will be used as your caller ID/Profile info when connecting home.
-                                        </p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -528,6 +415,6 @@ export default function Dashboard() {
                     </div>
                 </DialogContent>
             </Dialog>
-        </div>
+        </div >
     );
 }
