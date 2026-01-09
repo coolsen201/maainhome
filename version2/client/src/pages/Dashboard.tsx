@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+import { usePairing } from "@/hooks/use-pairing";
 import {
     Dialog,
     DialogContent,
@@ -214,17 +215,54 @@ export default function Dashboard() {
         document.body.removeChild(element);
     };
 
-    const handleGenerateQR = () => {
-        if (!profile?.secure_key) {
+    const { pairDeviceWithCode, generatePairingCode } = usePairing();
+    const [pairingCode, setPairingCode] = useState("");
+    const [isPairing, setIsPairing] = useState(false);
+
+    const handlePairWithCode = async () => {
+        if (pairingCode.length !== 6 || !profile?.secure_key) {
+            toast({ variant: "destructive", title: "Invalid Code", description: "Please enter a 6-digit code." });
+            return;
+        }
+        setIsPairing(true);
+        try {
+            const result = await pairDeviceWithCode(pairingCode, profile.id, profile.secure_key);
+            if (result.success) {
+                toast({ title: "Station Linked", description: "Your Home Station is now paired!" });
+                setPairingCode("");
+            }
+        } catch (error: any) {
+            toast({ variant: "destructive", title: "Pairing Failed", description: error.message });
+        } finally {
+            setIsPairing(false);
+        }
+    };
+
+    const [qrToken, setQrToken] = useState<string | null>(null);
+
+    const handleGenerateQR = async () => {
+        if (!profile?.secure_key || !user) {
             toast({
                 variant: "destructive",
                 title: "No Key Found",
                 description: "Generating a new key for your system...",
             });
-            handleGenerateKey();
+            await handleGenerateKey();
             return;
         }
-        setShowQRModal(true);
+
+        try {
+            const token = await generatePairingCode();
+            await pairDeviceWithCode(token, user.id, profile.secure_key);
+            setQrToken(token);
+            setShowQRModal(true);
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: "QR Generation Failed",
+                description: error.message,
+            });
+        }
     };
 
     return (
@@ -337,6 +375,27 @@ export default function Dashboard() {
                                     <Monitor className="w-4 h-4 group-hover:scale-110 transition-transform" />
                                     Show Multi-Service QR
                                 </button>
+
+                                <div className="pt-6 border-t border-gray-100 space-y-4">
+                                    <label className="text-[10px] font-bold tracking-widest uppercase text-black/40 px-2">Link Home Station</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            maxLength={6}
+                                            value={pairingCode}
+                                            onChange={(e) => setPairingCode(e.target.value)}
+                                            placeholder="6-digit code"
+                                            className="flex-1 bg-white border border-gray-200 rounded-xl px-4 text-center font-mono text-lg tracking-widest outline-none focus:ring-1 focus:ring-red-500/50"
+                                        />
+                                        <button
+                                            onClick={handlePairWithCode}
+                                            disabled={isPairing || pairingCode.length !== 6}
+                                            className="bg-green-600 hover:bg-green-700 text-white px-4 rounded-xl font-bold text-xs uppercase transition-all disabled:opacity-50"
+                                        >
+                                            {isPairing ? "..." : "Link"}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="pt-4 border-t border-gray-200">
@@ -433,29 +492,39 @@ export default function Dashboard() {
                 <DialogContent className="bg-white border-gray-200 sm:max-w-md rounded-[2.5rem] p-10">
                     <DialogHeader className="space-y-4 text-center">
                         <DialogTitle className="text-3xl font-black italic tracking-tighter text-red-600">
-                            STATION AUTH QR
+                            STATION PAIRING QR
                         </DialogTitle>
                         <DialogDescription className="text-black/40 font-mono text-xs uppercase tracking-[0.2em]">
-                            Scan this code with the Android App to pair your Home Station
+                            Scan this with the Home Station to link this account
                         </DialogDescription>
                     </DialogHeader>
 
                     <div className="flex flex-col items-center justify-center space-y-8 py-8">
-                        <div className="p-4 bg-white rounded-3xl shadow-[0_0_50px_rgba(220,38,38,0.15)] border border-gray-100">
-                            <img
-                                src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(`MOM_IN_HOME_AUTH:${profile?.secure_key}`)}`}
-                                alt="Pairing QR Code"
-                                className="w-64 h-64"
-                            />
+                        <div className="p-8 bg-white rounded-[3rem] shadow-[0_0_80px_rgba(220,38,38,0.15)] border-4 border-red-50">
+                            {qrToken ? (
+                                <img
+                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${qrToken}&margin=10`}
+                                    alt="Pairing QR Code"
+                                    className="w-64 h-64"
+                                />
+                            ) : (
+                                <div className="w-64 h-64 flex items-center justify-center">
+                                    <div className="w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin" />
+                                </div>
+                            )}
                         </div>
 
-                        <div className="space-y-2 text-center w-full">
-                            <p className="text-[10px] text-black/20 font-bold uppercase tracking-widest leading-relaxed">
-                                This code contains your unique 256-bit encrypted secure key.
-                            </p>
-                            <div className="px-4 py-2 bg-gray-50 rounded-xl border border-gray-200 truncate max-w-full">
-                                <code className="text-[8px] text-green-600 font-mono">{profile?.secure_key}</code>
+                        <div className="space-y-4 text-center w-full">
+                            <div className="flex flex-col gap-1">
+                                <span className="text-[10px] text-black/20 font-bold uppercase tracking-widest">Single-Use Code</span>
+                                <span className="text-4xl font-black tracking-[0.5em] text-black bg-gray-50 py-4 rounded-2xl border border-gray-100 italic">
+                                    {qrToken}
+                                </span>
                             </div>
+                            <p className="text-[10px] text-black/30 font-bold uppercase leading-relaxed px-4">
+                                This simplified QR and code will expire in **1 hour**.
+                                Use it to pair your Home Station without a keyboard.
+                            </p>
                         </div>
                     </div>
                 </DialogContent>

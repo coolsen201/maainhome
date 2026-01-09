@@ -72,9 +72,19 @@ export async function registerRoutes(
   // WebSocket Signaling Server
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
 
-  // Simple in-memory store for the two peers
+  // Multi-remote support: Home station is unique, but many remotes can connect
   let homeSocket: WebSocket | null = null;
-  let remoteSocket: WebSocket | null = null;
+  const remoteSockets = new Set<WebSocket>();
+
+  const broadcastStatus = (isHomeOnline: boolean) => {
+    const statusMsg = JSON.stringify({
+      type: WS_EVENTS.STATUS,
+      payload: { homeOnline: isHomeOnline }
+    });
+    remoteSockets.forEach(s => {
+      if (s.readyState === WebSocket.OPEN) s.send(statusMsg);
+    });
+  };
 
   wss.on('connection', (ws) => {
     console.log('New WebSocket connection');
@@ -89,21 +99,18 @@ export async function registerRoutes(
             if (message.payload.role === 'home') {
               console.log('Home device registered');
               homeSocket = ws;
-              // Notify any existing remote that home is online
-              if (remoteSocket && remoteSocket.readyState === WebSocket.OPEN) {
-                remoteSocket.send(JSON.stringify({ type: WS_EVENTS.STATUS, payload: { homeOnline: true } }));
-              }
+              broadcastStatus(true);
             } else if (message.payload.role === 'remote') {
               console.log('Remote user registered');
-              remoteSocket = ws;
-              // Tell remote if home is already online
+              remoteSockets.add(ws);
+              // Tell this specific remote if home is already online
               const isHomeOnline = homeSocket !== null && homeSocket.readyState === WebSocket.OPEN;
               ws.send(JSON.stringify({ type: WS_EVENTS.STATUS, payload: { homeOnline: isHomeOnline } }));
             }
             break;
 
           case WS_EVENTS.OFFER:
-            // Forward offer from Remote -> Home
+            // Forward offer from ANY Remote -> Home
             if (homeSocket && homeSocket.readyState === WebSocket.OPEN) {
               console.log('Forwarding OFFER to Home');
               homeSocket.send(JSON.stringify(message));
@@ -113,18 +120,23 @@ export async function registerRoutes(
             break;
 
           case WS_EVENTS.ANSWER:
-            // Forward answer from Home -> Remote
-            if (remoteSocket && remoteSocket.readyState === WebSocket.OPEN) {
-              console.log('Forwarding ANSWER to Remote');
-              remoteSocket.send(JSON.stringify(message));
-            }
+            // Forward answer from Home -> Remote(s)
+            // Note: Since WebRTC works 1-on-1, if multiple remotes call simultaneously, 
+            // we'd need session IDs. For now, broadcasting to all remotes allows the caller to catch it.
+            console.log('Broadcasting ANSWER to all Remotes');
+            remoteSockets.forEach(s => {
+              if (s.readyState === WebSocket.OPEN) s.send(JSON.stringify(message));
+            });
             break;
 
           case WS_EVENTS.CANDIDATE:
-            // Forward candidates to the "other" party
-            if (ws === homeSocket && remoteSocket?.readyState === WebSocket.OPEN) {
-              remoteSocket.send(JSON.stringify(message));
-            } else if (ws === remoteSocket && homeSocket?.readyState === WebSocket.OPEN) {
+            if (ws === homeSocket) {
+              // Candidates from Home -> All Remotes
+              remoteSockets.forEach(s => {
+                if (s.readyState === WebSocket.OPEN) s.send(JSON.stringify(message));
+              });
+            } else if (remoteSockets.has(ws) && homeSocket?.readyState === WebSocket.OPEN) {
+              // Candidates from a specific Remote -> Home
               homeSocket.send(JSON.stringify(message));
             }
             break;
@@ -138,13 +150,10 @@ export async function registerRoutes(
       if (ws === homeSocket) {
         console.log('Home device disconnected');
         homeSocket = null;
-        // Notify remote
-        if (remoteSocket && remoteSocket.readyState === WebSocket.OPEN) {
-          remoteSocket.send(JSON.stringify({ type: WS_EVENTS.STATUS, payload: { homeOnline: false } }));
-        }
-      } else if (ws === remoteSocket) {
+        broadcastStatus(false);
+      } else {
         console.log('Remote user disconnected');
-        remoteSocket = null;
+        remoteSockets.delete(ws);
       }
     });
 

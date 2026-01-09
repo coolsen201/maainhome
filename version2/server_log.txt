@@ -1,0 +1,43 @@
+Starting Version 2 on Port 5000...
+
+> rest-express@2.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+12:43:37 AM [express] serving on port 5000
+New WebSocket connection
+Received message: join
+Home device registered
+New WebSocket connection
+Received message: join
+Remote user registered
+Home device disconnected
+New WebSocket connection
+Received message: join
+Home device registered
+Received message: offer
+Forwarding OFFER to Home
+Received message: candidate
+Received message: candidate
+Received message: candidate
+Received message: candidate
+Received message: answer
+Broadcasting ANSWER to all Remotes
+Received message: candidate
+Remote user disconnected
+New WebSocket connection
+Received message: join
+Remote user registered
+Received message: offer
+Forwarding OFFER to Home
+Remote user disconnected
+Home device disconnected
+New WebSocket connection
+Received message: join
+Home device registered
+New WebSocket connection
+Received message: join
+Remote user registered
+Remote user disconnected
+New WebSocket connection
+Received message: join
+Remote user registered

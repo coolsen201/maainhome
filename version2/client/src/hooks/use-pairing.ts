@@ -26,7 +26,6 @@ export function usePairing() {
     const validateAndPair = async (key: string, type: "home" | "remote") => {
         setIsValidating(true);
         try {
-            // Find the profile with this secure key
             const { data, error } = await supabase
                 .from("profiles")
                 .select("id, secure_key")
@@ -34,7 +33,7 @@ export function usePairing() {
                 .single();
 
             if (error || !data) {
-                throw new Error("Invalid Secure Key. Please check the QR code or key file.");
+                throw new Error("Invalid Secure Key.");
             }
 
             const newState: PairingState = {
@@ -54,6 +53,54 @@ export function usePairing() {
         }
     };
 
+    const generatePairingCode = async () => {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const { error } = await supabase
+            .from("pairing_tokens")
+            .insert({ token: code });
+
+        if (error) throw error;
+        return code;
+    };
+
+    const waitForPairing = async (code: string) => {
+        return new Promise<{ secureKey: string, profileId: string } | null>((resolve) => {
+            const subscription = supabase
+                .channel('pairing_changes')
+                .on('postgres_changes', {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'pairing_tokens',
+                    filter: `token=eq.${code}`
+                }, (payload: any) => {
+                    if (payload.new.secure_key && payload.new.profile_id) {
+                        subscription.unsubscribe();
+                        resolve({
+                            secureKey: payload.new.secure_key,
+                            profileId: payload.new.profile_id
+                        });
+                    }
+                })
+                .subscribe();
+
+            // Timeout after 1 hour
+            setTimeout(() => {
+                subscription.unsubscribe();
+                resolve(null);
+            }, 3600000);
+        });
+    };
+
+    const pairDeviceWithCode = async (code: string, profileId: string, secureKey: string) => {
+        const { error } = await supabase
+            .from("pairing_tokens")
+            .update({ profile_id: profileId, secure_key: secureKey })
+            .eq("token", code);
+
+        if (error) throw error;
+        return { success: true };
+    };
+
     const unpair = () => {
         localStorage.removeItem("intercom_pairing");
         setPairing({ isPaired: false, secureKey: null, profileId: null, pairingType: null });
@@ -63,6 +110,9 @@ export function usePairing() {
         ...pairing,
         isValidating,
         validateAndPair,
+        generatePairingCode,
+        waitForPairing,
+        pairDeviceWithCode,
         unpair
     };
 }

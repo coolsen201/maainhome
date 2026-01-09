@@ -4,11 +4,12 @@ import { VideoDisplay } from "@/components/VideoDisplay";
 import { LogConsole } from "@/components/LogConsole";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, ShieldCheck, Mic, MicOff, Camera, CameraOff, QrCode, Maximize2, ArrowLeft, Settings } from "lucide-react";
+import { Loader2, ShieldCheck, Mic, MicOff, Camera, CameraOff, QrCode, Maximize2, ArrowLeft, Settings, Smartphone } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
 import { usePairing } from "@/hooks/use-pairing";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 const DEFAULT_IMAGES = [
   "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1920&auto=format&fit=crop", // Nature
@@ -34,6 +35,7 @@ export default function HomeStation() {
   const [localScreensavers, setLocalScreensavers] = useState<string[]>([]);
   const [showManualInput, setShowManualInput] = useState(false);
   const [manualKey, setManualKey] = useState("");
+  const [isResolving, setIsResolving] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -93,10 +95,36 @@ export default function HomeStation() {
     }
   };
 
+  // No more auto-generating code on Home Station per user request
+  // (Simplified QR experience: Dashboard shows, Home Station scans)
+
   const handlePairing = async (qrData: string) => {
-    const key = qrData.includes("MOM_IN_HOME_AUTH:")
+    let key = qrData.includes("MOM_IN_HOME_AUTH:")
       ? qrData.split("MOM_IN_HOME_AUTH:")[1]
       : qrData;
+
+    // Check if it's a 6-digit Simplified Token
+    if (/^\d{6}$/.test(qrData)) {
+      setIsResolving(true);
+      try {
+        const { data, error } = await supabase
+          .from("pairing_tokens")
+          .select("secure_key")
+          .eq("token", qrData)
+          .single();
+
+        if (error || !data?.secure_key) {
+          throw new Error("Invalid or Expired QR code.");
+        }
+        key = data.secure_key;
+      } catch (err: any) {
+        toast({ variant: "destructive", title: "Scan Failed", description: err.message });
+        setIsResolving(false);
+        return;
+      } finally {
+        setIsResolving(false);
+      }
+    }
 
     const result = await validateAndPair(key, "home");
     if (result.success) {
@@ -129,7 +157,9 @@ export default function HomeStation() {
     );
   }
 
-  // Pairing Overlay
+  const [keyboardCode, setKeyboardCode] = useState("");
+
+  // Pairing Overlay: Focused on Scanner & Keyboard
   if (!isPaired) {
     return (
       <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6 text-white relative">
@@ -137,56 +167,114 @@ export default function HomeStation() {
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
           Back to Dashboard
         </Link>
-        <div className="w-24 h-24 mb-8 bg-red-600 rounded-3xl flex items-center justify-center shadow-[0_0_50px_rgba(220,38,38,0.3)]">
-          <QrCode className="w-12 h-12 text-white" />
-        </div>
-        <h1 className="text-4xl font-black italic tracking-tighter mb-4 text-center uppercase">Scan QR to Pair</h1>
-        <p className="max-w-md text-gray-400 font-mono text-sm uppercase tracking-widest mb-12 text-center">
-          Point this station's camera at the QR code on your dashboard.
-        </p>
 
-        {showManualInput ? (
-          <div className="w-full max-w-md space-y-4 animate-in fade-in slide-in-from-bottom-4">
-            <div className="bg-black/20 backdrop-blur-md p-6 rounded-3xl border border-white/10 space-y-4">
-              <label className="block text-[10px] font-mono text-white/40 uppercase tracking-[0.2em] px-2">Enter Secure Key Manually</label>
-              <textarea
-                value={manualKey}
-                onChange={(e) => setManualKey(e.target.value)}
-                placeholder="Paste the 256-bit secure key here..."
-                className="w-full h-32 bg-black/40 border-white/10 rounded-2xl p-4 text-xs font-mono text-green-500 placeholder:text-white/10 focus:ring-1 focus:ring-red-500/50 outline-none resize-none"
-              />
-              <Button
-                onClick={() => handlePairing(manualKey)}
-                disabled={!manualKey.trim() || isValidating}
-                className="w-full h-14 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl"
-              >
-                {isValidating ? <Loader2 className="w-5 h-5 animate-spin" /> : "PAIR WITH KEY"}
-              </Button>
+        <div className="w-24 h-24 mb-8 bg-black border border-white/10 rounded-3xl flex items-center justify-center shadow-2xl">
+          <Smartphone className="w-12 h-12 text-red-600" />
+        </div>
+
+        <h1 className="text-4xl font-black italic tracking-tighter mb-4 text-center uppercase">Connect Station</h1>
+
+        <div className="grid md:grid-cols-2 gap-8 items-start max-w-4xl w-full mt-8">
+          {/* Option 1: Keyboard Input */}
+          <div className="bg-black/40 backdrop-blur-3xl border border-white/10 p-10 rounded-[3rem] shadow-2xl space-y-8 flex flex-col items-center">
+            <div className="space-y-2 text-center">
+              <p className="text-[10px] font-mono text-white/40 uppercase tracking-[0.3em]">Method 1: Type Code</p>
+              <h3 className="text-lg font-bold text-white uppercase italic tracking-tight">Enter 6-Digit Code</h3>
             </div>
-            <button
-              onClick={() => setShowManualInput(false)}
-              className="w-full text-center text-xs text-white/30 hover:text-white transition-colors"
+
+            <div className="flex gap-2 w-full justify-center">
+              <input
+                autoFocus
+                type="text"
+                maxLength={6}
+                value={keyboardCode}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  setKeyboardCode(val);
+                  if (val.length === 6) handlePairing(val);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && keyboardCode.length === 6) handlePairing(keyboardCode);
+                }}
+                className="w-full h-24 bg-white/5 border-2 border-white/10 rounded-3xl text-center text-5xl font-black italic tracking-[0.5em] text-red-500 outline-none focus:border-red-600 focus:bg-white/10 transition-all placeholder:text-white/5"
+                placeholder="000000"
+              />
+            </div>
+
+            <div className="w-full h-px bg-white/5" />
+
+            <Button
+              onClick={() => handlePairing(keyboardCode)}
+              disabled={keyboardCode.length !== 6 || isValidating || isResolving}
+              className="w-full h-16 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl text-xs tracking-widest uppercase"
             >
-              Back to QR Scanner
-            </button>
+              {isValidating || isResolving ? <Loader2 className="w-5 h-5 animate-spin" /> : "LINK STATION"}
+            </Button>
           </div>
-        ) : (
-          <>
-            <QrScanner onScanSuccess={handlePairing} />
-            <button
-              onClick={() => setShowManualInput(true)}
-              className="mt-8 text-xs font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors flex items-center gap-2 group"
-            >
-              <Settings className="w-3 h-3 group-hover:rotate-90 transition-transform" />
-              Use Manual Key Entry
-            </button>
-          </>
+
+          {/* Option 2: QR Scanner */}
+          <div className="relative group flex flex-col items-center">
+            <div className="absolute -inset-2 bg-gradient-to-r from-red-600/20 to-red-400/20 rounded-[3rem] blur-xl opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+            <div className="relative bg-black/40 backdrop-blur-3xl border border-white/10 p-4 rounded-[3rem] shadow-2xl flex flex-col items-center w-full min-h-[400px]">
+              <div className="mt-4 mb-6 space-y-1 text-center">
+                <p className="text-[10px] font-mono text-white/40 uppercase tracking-[0.3em]">Method 2: Scan QR</p>
+                <h3 className="text-sm font-bold text-white uppercase italic">Point Camera at Phone</h3>
+              </div>
+
+              <QrScanner onScanSuccess={handlePairing} />
+
+              <div className="mt-8 flex flex-col items-center gap-4 px-8 pb-4">
+                <div className="flex gap-6">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                      <span className="text-[10px] font-bold text-red-500">1</span>
+                    </div>
+                    <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest leading-normal text-center">
+                      6-8 inches<br />away
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                      <span className="text-[10px] font-bold text-red-500">2</span>
+                    </div>
+                    <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest leading-normal text-center">
+                      Avoid<br />Glare
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {(isValidating || isResolving) && (
+          <div className="mt-12 flex items-center gap-3 text-red-500 font-bold animate-pulse tracking-widest uppercase text-xs">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            {(isResolving ? "Resolving Token..." : "Verifying Station...")}
+          </div>
         )}
 
-        {isValidating && !showManualInput && (
-          <div className="mt-8 flex items-center gap-3 text-red-500 font-bold animate-pulse">
-            <Loader2 className="w-5 h-5 animate-spin" />
-            VALIDATING STATION...
+        <button
+          onClick={() => setShowManualInput(!showManualInput)}
+          className="mt-12 text-[10px] font-mono uppercase tracking-widest text-white/20 hover:text-white transition-colors"
+        >
+          {showManualInput ? "Hide Advanced Entry" : "Show Manual Key Entry"}
+        </button>
+
+        {showManualInput && (
+          <div className="mt-8 w-full max-w-sm space-y-4 animate-in fade-in slide-in-from-bottom-4">
+            <textarea
+              value={manualKey}
+              onChange={(e) => setManualKey(e.target.value)}
+              placeholder="Paste secure key..."
+              className="w-full h-24 bg-black/40 border-white/10 rounded-2xl p-4 text-xs font-mono text-green-500 outline-none resize-none"
+            />
+            <Button
+              onClick={() => handlePairing(manualKey)}
+              className="w-full h-14 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl"
+            >
+              Pair Manually With Key
+            </Button>
           </div>
         )}
       </div>
