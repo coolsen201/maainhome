@@ -347,7 +347,7 @@ export default function HomeStation() {
 
             {/* Top-Aligned Waiting Text */}
             <div className="absolute inset-x-0 top-0 pt-24 flex flex-col items-center z-10 p-4 text-center">
-              <h2 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white tracking-widest drop-shadow-[0_4px_30px_rgba(0,0,0,1)] animate-pulse">
+              <h2 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-black tracking-widest drop-shadow-[0_4px_30px_rgba(255,255,255,0.8)] animate-pulse">
                 Waiting for Connection
               </h2>
             </div>

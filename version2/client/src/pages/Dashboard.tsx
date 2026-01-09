@@ -271,7 +271,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-blue-50 text-black p-6 md:p-12 relative overflow-hidden">
+        <div className="min-h-screen bg-[#32939C] text-black p-6 md:p-12 relative overflow-hidden">
             {/* Background Decor */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[128px]" />

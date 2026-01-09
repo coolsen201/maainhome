@@ -49,7 +49,7 @@ export function VideoDisplay({
         <div className="flex flex-col items-center justify-center w-full h-full text-muted-foreground bg-black/90 relative p-8 gap-12 overflow-hidden">
           {/* Header Text - Now in flex flow to avoid overlap */}
           <div className="z-20 text-center flex flex-col items-center shrink-0">
-            <span className="text-3xl md:text-5xl lg:text-7xl font-extrabold tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,1)] max-w-5xl mx-auto leading-tight">
+            <span className="text-3xl md:text-5xl lg:text-7xl font-extrabold tracking-tight text-black drop-shadow-[0_4px_30px_rgba(255,255,255,0.7)] max-w-5xl mx-auto leading-tight">
               {offlineText || "Signal Lost"}
             </span>
           </div>
