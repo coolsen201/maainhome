@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Monitor, Smartphone, Upload, Plus, Image as ImageIcon, ArrowLeft, LogOut, Settings, ShieldCheck } from "lucide-react";
+import { Monitor, Smartphone, Upload, Plus, Image as ImageIcon, ArrowLeft, LogOut, ShieldCheck } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
@@ -37,13 +37,15 @@ export default function Dashboard() {
     useEffect(() => {
         if (profile) {
             const newPhotos = Array(11).fill(null);
+            // Selfie is now first (index 0)
+            if (profile.selfie_photo) {
+                newPhotos[0] = profile.selfie_photo;
+            }
+            // Screensavers are offset by 1
             if (profile.screensaver_photos) {
                 profile.screensaver_photos.forEach((url: string, i: number) => {
-                    if (i < 10) newPhotos[i] = url;
+                    if (i < 10) newPhotos[i + 1] = url;
                 });
-            }
-            if (profile.selfie_photo) {
-                newPhotos[10] = profile.selfie_photo;
             }
             setPhotos(newPhotos);
         }
@@ -63,9 +65,9 @@ export default function Dashboard() {
     };
 
     const photoLabels = [
+        "Mom/Dad Selfie",
         "Screensaver 1", "Screensaver 2", "Screensaver 3", "Screensaver 4", "Screensaver 5",
-        "Screensaver 6", "Screensaver 7", "Screensaver 8", "Screensaver 9", "Screensaver 10",
-        "Mom/Dad Selfie"
+        "Screensaver 6", "Screensaver 7", "Screensaver 8", "Screensaver 9", "Screensaver 10"
     ];
 
     const handlePhotoUpload = (index: number) => {
@@ -121,11 +123,11 @@ export default function Dashboard() {
 
                 // 3. Update Database Profile
                 const updateData: any = {};
-                if (index === 10) {
+                if (index === 0) { // New Selfie index
                     updateData.selfie_photo = publicUrl;
                 } else {
                     const currentPhotos = [...(profile?.screensaver_photos || [])];
-                    currentPhotos[index] = publicUrl;
+                    currentPhotos[index - 1] = publicUrl; // Offset for screensavers
                     updateData.screensaver_photos = currentPhotos;
                 }
 
@@ -278,26 +280,22 @@ export default function Dashboard() {
 
             <div className="max-w-7xl mx-auto z-10 relative">
                 {/* Header */}
-                <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+                <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
                     <div className="space-y-2">
                         <Link href="/" className="inline-flex items-center text-xs font-bold tracking-widest uppercase text-black/40 hover:text-red-600 transition-colors group mb-4">
                             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                            Back to Landing
+                            Back
                         </Link>
-                        <h1 className="text-3xl font-bold tracking-tight text-red-600">System Dashboard</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-red-600">Dashboard</h1>
                         <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-black italic leading-none">
                             Mom in Home
                         </span>
                     </div>
 
                     <div className="flex gap-4">
-                        <button className="bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-2xl border border-gray-200 flex items-center gap-3 text-sm font-bold text-black/60 transition-all">
-                            <Settings className="w-4 h-4" />
-                            Settings
-                        </button>
                         <button
                             onClick={handleLogOut}
-                            className="bg-red-50 hover:bg-red-100 px-6 py-3 rounded-2xl border border-red-200 flex items-center gap-3 text-sm font-bold text-red-600 transition-all"
+                            className="bg-red-50 hover:bg-red-100 px-8 py-4 rounded-2xl border border-red-200 flex items-center gap-3 text-sm font-bold text-red-600 transition-all shadow-sm"
                         >
                             <LogOut className="w-4 h-4" />
                             Sign Out
@@ -305,137 +303,106 @@ export default function Dashboard() {
                     </div>
                 </header>
 
-                {/* Main Management Hub */}
-                <div className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-2xl space-y-12">
-                    <div className="text-center space-y-2">
-                        <h2 className="text-xs font-bold tracking-[0.3em] uppercase text-black/20">System Management</h2>
-                        <p className="text-lg font-bold text-black italic">Manage your secure connection and pair new devices</p>
-                    </div>
+                {/* Split Column Layout */}
+                <div className="grid lg:grid-cols-[1fr_2px_1.5fr] gap-12 items-start">
 
-                    <div className="grid md:grid-cols-2 gap-8">
-                        {/* Merged Step 1 & 2: Download the Android Key */}
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={handleDownloadKey}
-                            className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] bg-red-50 border border-red-100 hover:bg-red-100 transition-all group gap-6 text-center"
-                        >
-                            <div className="w-20 h-20 rounded-3xl bg-red-600 flex items-center justify-center shadow-lg group-hover:shadow-red-600/20 transition-all">
-                                <Smartphone className="w-10 h-10 text-white" />
-                            </div>
-                            <div className="space-y-2">
-                                <h3 className="text-sm font-black tracking-widest uppercase text-red-600">Action 1</h3>
-                                <p className="text-xl font-bold text-black uppercase leading-tight">Download the<br />Android Key</p>
-                                <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Generates & Saves to Device</p>
-                            </div>
-                        </motion.button>
+                    {/* LEFT COLUMN: Actions */}
+                    <div className="space-y-12">
+                        <div className="space-y-4">
+                            <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-black/20">System Management</h2>
+                            <p className="text-2xl font-bold text-black italic leading-tight">create your secure connection and home new devices</p>
+                        </div>
 
-                        {/* Step 3: Generate Code for Home Session (Now Action 2) */}
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={handleGenerateQR}
-                            className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] bg-green-50 border border-green-100 hover:bg-green-100 transition-all group gap-6 text-center"
-                        >
-                            <div className="w-20 h-20 rounded-3xl bg-green-600 flex items-center justify-center shadow-lg group-hover:shadow-green-600/20 transition-all">
-                                <Monitor className="w-10 h-10 text-white" />
-                            </div>
-                            <div className="space-y-2">
-                                <h3 className="text-sm font-black tracking-widest uppercase text-green-600">Action 2</h3>
-                                <p className="text-xl font-bold text-black uppercase leading-tight">Generate Code<br />for Home Session</p>
-                                <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Quick Pairing for Station</p>
-                            </div>
-                        </motion.button>
-                    </div>
+                        <div className="space-y-6">
+                            {/* Action 1 */}
+                            <motion.button
+                                whileHover={{ scale: 1.01 }}
+                                whileTap={{ scale: 0.99 }}
+                                onClick={handleDownloadKey}
+                                className="w-full flex items-center p-8 rounded-[2.5rem] bg-white border border-gray-100 shadow-xl hover:border-red-100 transition-all group gap-8 text-left"
+                            >
+                                <div className="w-16 h-16 rounded-2xl bg-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                    <Smartphone className="w-8 h-8 text-white" />
+                                </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-[10px] font-black tracking-widest uppercase text-red-600">Action 1</h3>
+                                    <p className="text-xl font-extrabold text-black uppercase">Download the Android Key</p>
+                                    <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Secure Link for Mobile</p>
+                                </div>
+                            </motion.button>
 
-                    <div className="pt-8 border-t border-gray-100">
-                        <div className="flex flex-col items-center gap-2">
-                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-black/20">System Security Status</span>
-                            <div className="flex items-center gap-2">
+                            {/* Action 2 */}
+                            <motion.button
+                                whileHover={{ scale: 1.01 }}
+                                whileTap={{ scale: 0.99 }}
+                                onClick={handleGenerateQR}
+                                className="w-full flex items-center p-8 rounded-[2.5rem] bg-white border border-gray-100 shadow-xl hover:border-green-100 transition-all group gap-8 text-left"
+                            >
+                                <div className="w-16 h-16 rounded-2xl bg-green-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                    <Monitor className="w-8 h-8 text-white" />
+                                </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-[10px] font-black tracking-widest uppercase text-green-600">Action 2</h3>
+                                    <p className="text-xl font-extrabold text-black uppercase">Generate Code for Home Session</p>
+                                    <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Instant Pairing for Station</p>
+                                </div>
+                            </motion.button>
+                        </div>
+
+                        <div className="p-8 rounded-[2rem] bg-black/5 backdrop-blur-sm border border-black/5 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-xs font-mono font-black text-green-600 uppercase tracking-wider">
+                                <span className="text-[10px] font-mono font-black text-black/40 uppercase tracking-widest">
                                     End-to-End Encryption Active
                                 </span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Photo Management Hub */}
-                <div className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-2xl space-y-12">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="text-center md:text-left space-y-2">
-                            <h2 className="text-xs font-bold tracking-[0.3em] uppercase text-black/20">Family Asset Management</h2>
-                            <p className="text-lg font-bold text-black italic">Upload photos for Home Station & Remote profile</p>
-                        </div>
-                        <div className="px-4 py-2 bg-green-50 border border-green-100 rounded-full flex items-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-green-500 animate-bounce" />
-                            <span className="text-[10px] font-black tracking-widest uppercase text-green-700">Auto-convert to PNG ready</span>
+                            <ShieldCheck className="w-4 h-4 text-green-600" />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {photos.map((photo, index) => (
-                            <motion.div
-                                key={index}
-                                onClick={() => handlePhotoUpload(index)}
-                                whileHover={{ scale: 1.05 }}
-                                className={`aspect-square bg-white rounded-[2rem] border transition-all overflow-hidden relative group cursor-pointer ${index === 10 ? 'border-red-500/30' : 'border-gray-100 shadow-sm'
-                                    }`}
-                            >
-                                {isConverting === index ? (
-                                    <div className="w-full h-full flex flex-col items-center justify-center bg-white/80">
-                                        <div className="w-8 h-8 rounded-full border-4 border-green-600 border-t-transparent animate-spin mb-2" />
-                                        <span className="text-[8px] font-bold text-green-600 tracking-[0.3em] uppercase text-center">Processing<br />Canvas PNG</span>
-                                    </div>
-                                ) : photo ? (
-                                    <img src={photo} className="w-full h-full object-cover" alt={photoLabels[index]} />
-                                ) : (
-                                    <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center space-y-2 bg-gray-50 group-hover:bg-gray-100 transition-colors">
-                                        <div className={`w-10 h-10 rounded-2xl border-2 border-dashed flex items-center justify-center transition-colors ${index === 10 ? 'border-red-500/50 group-hover:border-red-600' : 'border-gray-300 group-hover:border-green-600'
-                                            }`}>
-                                            <Plus className={`w-4 h-4 transition-colors ${index === 10 ? 'text-red-600' : 'text-gray-400 group-hover:text-green-600'
-                                                }`} />
+                    {/* MIDDLE: Thick Divider */}
+                    <div className="hidden lg:block w-1 h-full bg-gray-200/60 self-stretch rounded-full mx-auto shadow-sm" />
+
+                    {/* RIGHT COLUMN: Photo Hub */}
+                    <div className="space-y-8 bg-white/40 p-10 rounded-[3rem] border border-white/20 shadow-xl backdrop-blur-sm">
+                        <div className="space-y-1">
+                            <h2 className="text-[10px] font-bold tracking-[0.3em] uppercase text-black/20">Family Asset Management</h2>
+                            <p className="text-xl font-bold text-black italic">Upload photos for Home Station</p>
+                        </div>
+
+                        <div className="grid grid-cols-4 gap-2">
+                            {photos.map((photo, index) => (
+                                <motion.div
+                                    key={index}
+                                    onClick={() => handlePhotoUpload(index)}
+                                    whileHover={{ scale: 1.05 }}
+                                    className={`aspect-square bg-white rounded-3xl border transition-all overflow-hidden relative group cursor-pointer ${index === 0 ? 'border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.1)] ring-2 ring-red-50' : 'border-gray-100 shadow-sm hover:border-green-400'
+                                        }`}
+                                >
+                                    {isConverting === index ? (
+                                        <div className="w-full h-full flex flex-col items-center justify-center bg-white/80">
+                                            <div className="w-5 h-5 rounded-full border-2 border-green-600 border-t-transparent animate-spin" />
                                         </div>
-                                        <span className={`text-[10px] font-bold tracking-wider uppercase transition-colors ${index === 10 ? 'text-red-600' : 'text-black/20 group-hover:text-black/40'
-                                            }`}>
-                                            {photoLabels[index]}
-                                        </span>
+                                    ) : photo ? (
+                                        <img src={photo} className="w-full h-full object-cover" alt={photoLabels[index]} />
+                                    ) : (
+                                        <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center space-y-1 bg-gray-50/50 group-hover:bg-green-50/30 transition-colors">
+                                            <div className={`w-8 h-8 rounded-xl border-2 border-dashed flex items-center justify-center transition-colors ${index === 0 ? 'border-red-200 group-hover:border-red-500' : 'border-gray-200 group-hover:border-green-500'
+                                                }`}>
+                                                <Plus className={`w-3 h-3 transition-colors ${index === 0 ? 'text-red-400' : 'text-gray-300 group-hover:text-green-500'
+                                                    }`} />
+                                            </div>
+                                            <span className={`text-[8px] font-black tracking-tight uppercase transition-colors ${index === 0 ? 'text-red-500' : 'text-black/20 group-hover:text-black/60'
+                                                }`}>
+                                                {photoLabels[index]}
+                                            </span>
+                                        </div>
+                                    )}
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <Upload className="w-4 h-4 text-white" />
                                     </div>
-                                )}
-                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <div className="flex flex-col items-center gap-2">
-                                        <Upload className="w-6 h-6 text-white" />
-                                        <span className="text-[8px] font-bold text-white/60 tracking-widest uppercase">Tap to Upload</span>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-8">
-                        <div className="p-8 rounded-[2.5rem] bg-gray-50 border border-gray-100 flex items-start gap-6">
-                            <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm shrink-0">
-                                <Monitor className="w-6 h-6 text-blue-600" />
-                            </div>
-                            <div className="space-y-2">
-                                <h4 className="font-bold text-black uppercase tracking-tight">Screensaver Sequence</h4>
-                                <p className="text-xs text-black/60 leading-relaxed font-medium">
-                                    Upload up to 10 photos to rotate on the **Home Station** while idle. These will become the interactive background for the Lenovo station.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="p-8 rounded-[2.5rem] bg-red-50 border border-red-100 flex items-start gap-6">
-                            <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm shrink-0">
-                                <Smartphone className="w-6 h-6 text-red-600" />
-                            </div>
-                            <div className="space-y-2">
-                                <h4 className="font-bold text-black uppercase tracking-tight">Mom's Remote ID</h4>
-                                <p className="text-xs text-black/60 leading-relaxed font-medium">
-                                    The 11th slot is your **Global Profile**. This photo is shown on the Home Station when you call, making the connection feel personal.
-                                </p>
-                            </div>
+                                </motion.div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -482,6 +449,6 @@ export default function Dashboard() {
                     </div>
                 </DialogContent>
             </Dialog>
-        </div >
+        </div>
     );
 }

@@ -146,8 +146,8 @@ export default function RemoteViewer() {
       {/* Navigation for Standalone App */}
       {!isConnected && !isConnecting && (
         <Link href="/dashboard" className="absolute top-8 left-8 z-[100] inline-flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl backdrop-blur-xl transition-all group">
-          <Settings className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
-          <span className="text-[10px] font-bold tracking-widest uppercase text-white/40 group-hover:text-white transition-colors">System Dashboard</span>
+          <ImageIcon className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
+          <span className="text-[10px] font-bold tracking-widest uppercase text-white/40 group-hover:text-white transition-colors">Dashboard</span>
         </Link>
       )}
 
