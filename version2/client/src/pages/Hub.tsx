@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Monitor, Smartphone, Settings, LogOut, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
+import CallHistory from "@/components/CallHistory";
 
 export default function Hub() {
     const [, setLocation] = useLocation();
@@ -98,6 +99,15 @@ export default function Hub() {
                     ))}
                 </div>
 
+                {/* Call History Section */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="w-full max-w-4xl mx-auto"
+                >
+                    <CallHistory limit={5} />
+                </motion.div>
                 <footer className="pt-12 flex flex-col items-center gap-6">
                     <button
                         onClick={handleSignOut}

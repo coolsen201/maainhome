@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { WS_EVENTS, type WsMessage } from "@shared/ws-types";
 import { useToast } from "@/hooks/use-toast";
-
+import { supabase } from "@/lib/supabase";
 const ICE_SERVERS = {
   iceServers: [
     { urls: "stun:stun.l.google.com:19302" },
@@ -31,6 +31,7 @@ export function useWebRTC(role: "home" | "remote") {
   // Ref to access current stream in callbacks without triggering re-renders or stale closures
   const localStreamRef = useRef<MediaStream | null>(null);
   const disconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const callStartTimeRef = useRef<number | null>(null);
   const { toast } = useToast();
 
   const addLog = useCallback((msg: string) => {
@@ -122,8 +123,39 @@ export function useWebRTC(role: "home" | "remote") {
           clearTimeout(disconnectTimeoutRef.current);
           disconnectTimeoutRef.current = null;
         }
+
+        // Log Call Start
+        callStartTimeRef.current = Date.now();
+        addLog(`Call active. Timer started.`);
+
         setState(prev => ({ ...prev, status: 'connected' }));
-      } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
+      } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed') {
+        // Log Call End if it was active
+        if (callStartTimeRef.current) {
+          const duration = Math.round((Date.now() - callStartTimeRef.current) / 1000);
+          const startTime = new Date(callStartTimeRef.current).toISOString();
+
+          addLog(`Call ended. Duration: ${duration}s. Logging to DB...`);
+
+          // Background insert
+          supabase.auth.getUser().then(({ data: { user } }) => {
+            if (user) {
+              supabase.from("call_logs").insert({
+                user_id: user.id,
+                start_time: startTime,
+                end_time: new Date().toISOString(),
+                duration_seconds: duration.toString(),
+                status: 'completed'
+              }).then(({ error }) => {
+                if (error) console.error("Error logging call:", error);
+                else addLog("Call log saved successfully");
+              });
+            }
+          });
+
+          callStartTimeRef.current = null;
+        }
+
         setState(prev => ({ ...prev, status: 'disconnected' }));
 
         addLog("Disconnected. Screensaver will activate in 30 seconds...");

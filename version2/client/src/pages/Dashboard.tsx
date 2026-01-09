@@ -4,6 +4,7 @@ import { Monitor, Smartphone, Upload, Plus, Image as ImageIcon, ArrowLeft, LogOu
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
+import CallHistory from "@/components/CallHistory";
 import { useToast } from "@/hooks/use-toast";
 import { usePairing } from "@/hooks/use-pairing";
 import {
@@ -358,8 +359,12 @@ export default function Dashboard() {
                             </div>
                             <ShieldCheck className="w-4 h-4 text-green-400" />
                         </div>
-                    </div>
 
+                        {/* Call History Tracker */}
+                        <div className="bg-white/10 p-2 rounded-[2rem] shadow-sm backdrop-blur-sm overflow-hidden">
+                            <CallHistory limit={10} variant="dark" />
+                        </div>
+                    </div>
                     {/* MIDDLE: Thick Divider */}
                     <div className="hidden lg:block w-1 h-full bg-gray-200/60 self-stretch rounded-full mx-auto shadow-sm" />
 
