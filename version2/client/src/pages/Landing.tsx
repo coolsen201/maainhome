@@ -97,10 +97,10 @@ export default function Landing() {
         <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-2xl shadow-primary/20 mb-6">
           <Video className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-white/70 mb-2">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#002B5B] mb-2">
           Secure <span className="font-bold uppercase italic">Intercom</span>
         </h1>
-        <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto mb-6">
+        <p className="text-[#002B5B]/60 text-sm md:text-base max-w-xl mx-auto mb-6 font-medium">
           High-fidelity, low-latency WebRTC video communication for your home security.
         </p>
         <span className="block text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-400 to-yellow-600 drop-shadow-[0_10px_40px_rgba(234,179,8,0.3)] italic">

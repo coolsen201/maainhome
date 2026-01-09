@@ -17,19 +17,29 @@ import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 
 function SmartRedirect() {
-  const [location, setLocation] = useLocation();
+  const [pathname, setLocation] = useLocation();
 
   useEffect(() => {
-    if (location === "/") {
-      // Logic for authenticated users
-      supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (pathname === "/") {
         if (session) {
           if (isElectron) setLocation("/home");
-          else setLocation("/hub"); // Desktop/Android go to Hub first
+          else setLocation("/hub");
         }
-      });
-    }
-  }, [location, setLocation]);
+      } else if (["/home", "/remote", "/hub", "/dashboard"].includes(pathname)) {
+        if (!session) {
+          setLocation("/");
+        }
+      }
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') setLocation("/");
+    });
+
+    return () => subscription.unsubscribe();
+  }, [pathname, setLocation]);
 
   return null;
 }
