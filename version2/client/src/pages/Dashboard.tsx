@@ -169,7 +169,7 @@ export default function Dashboard() {
     };
 
     const handleGenerateKey = async () => {
-        if (!user) return;
+        if (!user) return null;
 
         try {
             const newKey = generateSecureKey();
@@ -190,33 +190,37 @@ export default function Dashboard() {
                 description: "Your system has been assigned a new 256-bit secure key.",
             });
             refreshProfile();
+            return newKey;
         } catch (error: any) {
             toast({
                 variant: "destructive",
                 title: "Generation Failed",
                 description: error.message,
             });
+            return null;
         }
     };
 
-    const handleDownloadKey = () => {
-        if (!profile?.secure_key) {
+    const handleDownloadKey = async () => {
+        let keyToDownload = profile?.secure_key;
+
+        if (!keyToDownload) {
             toast({
-                variant: "destructive",
-                title: "No Key Found",
-                description: "Generating a new key for you...",
+                title: "Initializing Security",
+                description: "Generating your first digital key...",
             });
-            handleGenerateKey();
-            return;
+            keyToDownload = await handleGenerateKey();
         }
 
-        const element = document.createElement("a");
-        const file = new Blob([profile.secure_key], { type: 'text/plain' });
-        element.href = URL.createObjectURL(file);
-        element.download = "android_secure_key.txt";
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        if (keyToDownload) {
+            const element = document.createElement("a");
+            const file = new Blob([keyToDownload], { type: 'text/plain' });
+            element.href = URL.createObjectURL(file);
+            element.download = "android_secure_key.txt";
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
     };
 
 
