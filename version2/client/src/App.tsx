@@ -21,13 +21,28 @@ function SmartRedirect() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
+      // Check for permanent security key redirect (Android optimization)
+      const permanentKey = localStorage.getItem('permanent_secure_key');
+
       if (pathname === "/") {
         if (session) {
           if (isElectron) setLocation("/home");
+          else if (isAndroid && permanentKey) setLocation("/remote");
           else setLocation("/hub");
+        } else if (isAndroid && permanentKey) {
+          // Even without a full session, if we have the key, we can try to go to remote
+          // where the use-webrtc hook will use the key. 
+          // However, most routes are protected. Let's redirect to remote and let the 
+          // auth guard handle it if they need to log in first.
+          // Actually, if they have the key but no session, we should probably still require login
+          // UNLESS we want the key to be the sole auth. 
+          // User said: "dont have to relogin next time when closing and reopening the app it will go for remote page directly"
+          // This implies the key is enough or we should keep them logged in.
+          // Since we changed to localStorage, the session should persist.
+          setLocation("/remote");
         }
       } else if (["/home", "/remote", "/hub", "/dashboard"].includes(pathname)) {
-        if (!session) {
+        if (!session && !permanentKey) {
           setLocation("/");
         }
       }

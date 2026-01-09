@@ -104,26 +104,28 @@ export default function Landing() {
           High-fidelity, low-latency WebRTC video communication for your home security.
         </p>
         <span className="block text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-400 to-yellow-600 drop-shadow-[0_10px_40px_rgba(234,179,8,0.3)] italic">
-          &nbsp;Mom in Home
+          Mom in Home
         </span>
       </motion.div>
 
       <div className="flex justify-center w-full max-w-xl z-10 px-4">
         {/* Login Section */}
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="h-full glass-panel p-8 rounded-3xl border border-white/10 hover:border-green-500/50 transition-colors flex flex-col items-center text-center space-y-6 group-hover:shadow-2xl group-hover:shadow-green-500/10"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2 }}
+          className="w-full glass-panel p-6 md:p-8 rounded-[2rem] md:rounded-3xl border border-white/10 hover:border-green-500/50 transition-colors flex flex-col items-center text-center space-y-6"
         >
-          <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
-            <Video className="w-10 h-10 text-white group-hover:text-green-400 transition-colors" />
+          <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-full bg-secondary flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
+            <Video className="w-8 h-8 md:w-10 md:h-10 text-white group-hover:text-green-400 transition-colors" />
           </div>
           <form onSubmit={handleLogin} className="space-y-4 w-full text-left">
-            <h2 className="text-2xl font-semibold text-white text-center">System Login</h2>
+            <h2 className="text-xl md:text-2xl font-semibold text-white text-center">System Login</h2>
             <div className="space-y-3">
               <input
                 type="text"
                 placeholder="Email ID"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-green-500/50 transition-all font-mono"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 md:py-3 text-base md:text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-green-500/50 transition-all font-mono"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
@@ -132,18 +134,18 @@ export default function Landing() {
               <input
                 type="password"
                 placeholder="Password"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-green-500/50 transition-all font-mono"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 md:py-3 text-base md:text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-green-500/50 transition-all font-mono"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 required
               />
             </div>
-            <div className="mt-auto pt-6 w-full">
+            <div className="mt-auto pt-4 md:pt-6 w-full">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold tracking-widest uppercase text-xs hover:bg-green-600 hover:border-green-600 transition-all shadow-lg hover:shadow-green-900/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-4 md:py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold tracking-widest uppercase text-xs hover:bg-green-600 hover:border-green-600 transition-all shadow-lg hover:shadow-green-900/40 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Authenticating..." : "Submit Login"}
               </button>

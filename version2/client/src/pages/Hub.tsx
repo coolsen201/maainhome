@@ -2,12 +2,44 @@ import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Monitor, Smartphone, Settings, LogOut, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CallHistory from "@/components/CallHistory";
+import { useToast } from "@/hooks/use-toast";
+import { Key, CheckCircle } from "lucide-react";
 
 export default function Hub() {
     const [, setLocation] = useLocation();
-    const { user, loading: authLoading, signOut } = useAuth();
+    const { user, profile, loading: authLoading, signOut } = useAuth();
+    const { toast } = useToast();
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleSavePermanentKey = async () => {
+        if (!profile?.secure_key) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "No security key found in your profile. Please generate one in Settings first."
+            });
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            localStorage.setItem('permanent_secure_key', profile.secure_key);
+            toast({
+                title: "Security Key Saved",
+                description: "You will now skip login and land directly on Remote View next time."
+            });
+        } catch (e) {
+            toast({
+                variant: "destructive",
+                title: "Storage Error",
+                description: "Could not save the key. Please check browser permissions."
+            });
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     // Redirect to landing if not logged in
     useEffect(() => {
@@ -107,6 +139,45 @@ export default function Hub() {
                     className="w-full max-w-4xl mx-auto"
                 >
                     <CallHistory limit={5} />
+                </motion.div>
+
+                {/* Android Persistence Section */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="w-full max-w-4xl mx-auto"
+                >
+                    <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-[3rem] border border-blue-100 p-8 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="flex items-center gap-6 text-left">
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+                                <Key className="w-8 h-8 text-blue-600" />
+                            </div>
+                            <div className="space-y-1">
+                                <h3 className="text-lg font-black italic tracking-tight">Permanent App Access</h3>
+                                <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest max-w-[300px]">
+                                    Save your security key locally to skip login and land directly on Remote View next time.
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={handleSavePermanentKey}
+                            disabled={isSaving}
+                            className="bg-black hover:bg-black/90 text-white px-8 py-5 rounded-2xl flex items-center gap-3 text-xs font-black uppercase tracking-widest transition-all shadow-xl hover:shadow-black/20 disabled:opacity-50"
+                        >
+                            {isSaving ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    Saving...
+                                </>
+                            ) : (
+                                <>
+                                    <CheckCircle className="w-4 h-4 text-green-400" />
+                                    Save Security Key Permanent
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </motion.div>
                 <footer className="pt-12 flex flex-col items-center gap-6">
                     <button

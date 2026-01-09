@@ -287,8 +287,8 @@ export default function Dashboard() {
                             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                             Back to Hub
                         </Link>
-                        <h1 className="text-3xl font-bold tracking-tight text-white">Dashboard</h1>
-                        <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white italic leading-none">
+                        <h1 className="text-3xl font-bold tracking-tight text-[#002B5B]">Dashboard</h1>
+                        <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-400 to-yellow-600 drop-shadow-[0_10px_40px_rgba(234,179,8,0.3)] italic leading-none">
                             Mom in Home
                         </span>
                     </div>
