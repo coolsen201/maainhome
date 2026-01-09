@@ -309,63 +309,49 @@ export default function Dashboard() {
                             <p className="text-lg font-bold text-black italic">Manage your secure connection and pair new devices</p>
                         </div>
 
-                        <div className="grid md:grid-cols-3 gap-6">
-                            {/* 1. Generate New Key for Android */}
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={handleGenerateKey}
-                                className="flex flex-col items-center justify-center p-8 rounded-[2rem] bg-red-50 border border-red-100 hover:bg-red-100 transition-all group gap-4 text-center"
-                            >
-                                <div className="w-16 h-16 rounded-2xl bg-red-600 flex items-center justify-center shadow-lg group-hover:shadow-red-600/20 transition-all">
-                                    <ShieldCheck className="w-8 h-8 text-white" />
-                                </div>
-                                <div className="space-y-1">
-                                    <h3 className="text-xs font-black tracking-widest uppercase text-red-600">Step 1</h3>
-                                    <p className="text-xs font-bold text-black uppercase">Generate New Key<br />for Android</p>
-                                </div>
-                            </motion.button>
-
-                            {/* 2. Download the Key */}
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {/* Merged Step 1 & 2: Download the Android Key */}
                             <motion.button
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleDownloadKey}
-                                className="flex flex-col items-center justify-center p-8 rounded-[2rem] bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-all group gap-4 text-center"
+                                className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] bg-red-50 border border-red-100 hover:bg-red-100 transition-all group gap-6 text-center"
                             >
-                                <div className="w-16 h-16 rounded-2xl bg-black flex items-center justify-center shadow-lg transition-all">
-                                    <Smartphone className="w-8 h-8 text-white" />
+                                <div className="w-20 h-20 rounded-3xl bg-red-600 flex items-center justify-center shadow-lg group-hover:shadow-red-600/20 transition-all">
+                                    <Smartphone className="w-10 h-10 text-white" />
                                 </div>
-                                <div className="space-y-1">
-                                    <h3 className="text-xs font-black tracking-widest uppercase text-black/20">Step 2</h3>
-                                    <p className="text-xs font-bold text-black uppercase">Download<br />the Key</p>
+                                <div className="space-y-2">
+                                    <h3 className="text-sm font-black tracking-widest uppercase text-red-600">Action 1</h3>
+                                    <p className="text-xl font-bold text-black uppercase leading-tight">Download the<br />Android Key</p>
+                                    <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Generates & Saves to Device</p>
                                 </div>
                             </motion.button>
 
-                            {/* 3. Generate Code for Home Session */}
+                            {/* Step 3: Generate Code for Home Session (Now Action 2) */}
                             <motion.button
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleGenerateQR}
-                                className="flex flex-col items-center justify-center p-8 rounded-[2rem] bg-green-50 border border-green-100 hover:bg-green-100 transition-all group gap-4 text-center"
+                                className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] bg-green-50 border border-green-100 hover:bg-green-100 transition-all group gap-6 text-center"
                             >
-                                <div className="w-16 h-16 rounded-2xl bg-green-600 flex items-center justify-center shadow-lg group-hover:shadow-green-600/20 transition-all">
-                                    <Monitor className="w-8 h-8 text-white" />
+                                <div className="w-20 h-20 rounded-3xl bg-green-600 flex items-center justify-center shadow-lg group-hover:shadow-green-600/20 transition-all">
+                                    <Monitor className="w-10 h-10 text-white" />
                                 </div>
-                                <div className="space-y-1">
-                                    <h3 className="text-xs font-black tracking-widest uppercase text-green-600">Step 3</h3>
-                                    <p className="text-xs font-bold text-black uppercase">Generate Code<br />for Home Session</p>
+                                <div className="space-y-2">
+                                    <h3 className="text-sm font-black tracking-widest uppercase text-green-600">Action 2</h3>
+                                    <p className="text-xl font-bold text-black uppercase leading-tight">Generate Code<br />for Home Session</p>
+                                    <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest">Quick Pairing for Station</p>
                                 </div>
                             </motion.button>
                         </div>
 
                         <div className="pt-8 border-t border-gray-100">
                             <div className="flex flex-col items-center gap-2">
-                                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-black/20">Current Key Security Status</span>
+                                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-black/20">System Security Status</span>
                                 <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                    <span className="text-sm font-mono font-bold text-green-600">
-                                        Encryption Active (Valid until: {profile?.key_expiry ? new Date(profile.key_expiry).toLocaleDateString() : 'Loading...'})
+                                    <span className="text-xs font-mono font-black text-green-600 uppercase tracking-wider">
+                                        End-to-End Encryption Active
                                     </span>
                                 </div>
                             </div>
